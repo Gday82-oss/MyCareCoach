@@ -54,7 +54,7 @@
 - [ ] Rôles (admin, coach)
 
 ### Phase 4 : Features Avancées (Priorité BASSE)
- [ ] Calendrier interactif
+- [ ] Calendrier interactif
 - [ ] Notifications email/SMS
 - [ ] Export PDF (factures, programmes)
 - [ ] Statistiques avancées
