@@ -15,17 +15,17 @@ import Seances from './pages/Seances';
 import Programmes from './pages/Programmes';
 import Paiements from './pages/Paiements';
 
+const navItems = [
+  { path: '/', icon: Users, label: 'Dashboard' },
+  { path: '/clients', icon: Users, label: 'Clients' },
+  { path: '/seances', icon: Calendar, label: 'Séances' },
+  { path: '/programmes', icon: Dumbbell, label: 'Programmes' },
+  { path: '/paiements', icon: CreditCard, label: 'Paiements' },
+  { path: '/settings', icon: Settings, label: 'Paramètres' },
+];
+
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-
-  const navItems = [
-    { path: '/', icon: Users, label: 'Dashboard' },
-    { path: '/clients', icon: Users, label: 'Clients' },
-    { path: '/seances', icon: Calendar, label: 'Séances' },
-    { path: '/programmes', icon: Dumbbell, label: 'Programmes' },
-    { path: '/paiements', icon: CreditCard, label: 'Paiements' },
-    { path: '/settings', icon: Settings, label: 'Paramètres' },
-  ];
 
   return (
     <div className="flex h-screen bg-gray-50">
