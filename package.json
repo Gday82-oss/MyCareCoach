@@ -1,0 +1,19 @@
+{
+  "name": "coach-os-workflows",
+  "version": "1.0.0",
+  "description": "Automated workflows for CoachOS",
+  "scripts": {
+    "dev": "concurrently \"pnpm --filter client dev\" \"pnpm --filter server dev\"",
+    "build": "pnpm --filter client build && pnpm --filter server build",
+    "test": "pnpm --filter client test && pnpm --filter server test",
+    "deploy": "./deploy.sh",
+    "deploy:frontend": "./deploy.sh production frontend",
+    "deploy:backend": "./deploy.sh production backend",
+    "setup": "./deploy.sh production setup",
+    "lint": "pnpm --filter client lint && pnpm --filter server lint",
+    "format": "pnpm --filter client format && pnpm --filter server format"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
