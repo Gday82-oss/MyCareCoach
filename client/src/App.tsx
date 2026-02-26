@@ -20,6 +20,7 @@ import Clients from './pages/Clients';
 import Seances from './pages/Seances';
 import Programmes from './pages/Programmes';
 import Paiements from './pages/Paiements';
+import SettingsPage from './pages/Settings';
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -178,6 +179,7 @@ function App() {
           <Route path="/seances" element={<Seances />} />
           <Route path="/programmes" element={<Programmes />} />
           <Route path="/paiements" element={<Paiements />} />
+          <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </main>
     </div>
