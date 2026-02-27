@@ -1,0 +1,14 @@
+---
+# 🤖 Obi-Code - Agent Principal
+# Point d'entrée pour l'agent Copilot
+
+name: Obi-Code
+
+# Importe la configuration complète
+extends: ./copilot-agents/obi-code.yml
+
+# Activation rapide
+enabled: true
+
+# Priorité sur les autres agents
+priority: high
