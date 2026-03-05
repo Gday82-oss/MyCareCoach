@@ -1,31 +1,17 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from './lib/supabase';
+import LandingPage from './pages/LandingPage';
 import Auth from './pages/Auth';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
-import LandingPage from './pages/LandingPage';
 import CoachApp from './CoachApp';
 import ClientPortal from './pages/ClientPortal';
 
 function ForgotPasswordWrapper() {
   const navigate = useNavigate();
-  return <ForgotPassword onBack={() => navigate('/auth')} />;
-}
-
-/** Redirect /app → / for authenticated coach users. */
-function CoachAppWithRedirect() {
-  const location = useLocation();
-  if (location.pathname === '/app') return <Navigate to="/" replace />;
-  return <CoachApp />;
-}
-
-/** Redirect /app → /client for authenticated client users. */
-function ClientPortalWithRedirect() {
-  const location = useLocation();
-  if (location.pathname === '/app') return <Navigate to="/client" replace />;
-  return <ClientPortal />;
+  return <ForgotPassword onBack={() => navigate('/login')} />;
 }
 
 function App() {
@@ -52,7 +38,7 @@ function App() {
   async function checkUser() {
     const { data: { session } } = await supabase.auth.getSession();
     setUser(session?.user ?? null);
-    
+
     if (session?.user?.email) {
       await checkUserType(session.user.email);
     } else {
@@ -62,7 +48,6 @@ function App() {
 
   async function checkUserType(email: string) {
     try {
-      // Vérifier si c'est un client (priorité au client si email dans les deux)
       const { data: clientData, error: clientError } = await supabase
         .from('clients_coach')
         .select('id')
@@ -75,7 +60,6 @@ function App() {
         return;
       }
 
-      // Vérifier si c'est un coach
       const { data: coachData, error: coachError } = await supabase
         .from('coachs')
         .select('id')
@@ -88,7 +72,6 @@ function App() {
         return;
       }
 
-      // Par défaut, considérer comme coach (nouveau utilisateur)
       setUserType('coach');
     } catch (error) {
       console.error('Erreur checkUserType:', error);
@@ -106,25 +89,31 @@ function App() {
     );
   }
 
-  if (!user) {
-    return (
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/register" element={<Auth initialMode="register" />} />
-        <Route path="/forgot-password" element={<ForgotPasswordWrapper />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    );
-  }
+  const AppContent = () => {
+    if (!user) return <Navigate to="/login" replace />;
+    if (userType === 'client') return <ClientPortal />;
+    return <CoachApp />;
+  };
 
-  // Redirection selon le type d'utilisateur
-  if (userType === 'client') {
-    return <ClientPortalWithRedirect />;
-  }
+  return (
+    <Routes>
+      {/* Routes publiques */}
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<Auth />} />
+      <Route path="/register" element={<Auth initialMode="register" />} />
+      <Route path="/forgot-password" element={<ForgotPasswordWrapper />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
 
-  return <CoachAppWithRedirect />;
+      {/* Application protégée */}
+      <Route path="/app/*" element={<AppContent />} />
+
+      {/* Redirections legacy */}
+      <Route path="/auth" element={<Navigate to="/login" replace />} />
+      <Route path="/dashboard" element={<Navigate to="/app" replace />} />
+
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
 }
 
 export default App;
