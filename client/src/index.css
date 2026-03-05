@@ -2,6 +2,48 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ── Brand tokens ─────────────────────────────────────── */
+:root {
+  --brand-primary:   #00C896;
+  --brand-secondary: #1A2B4A;
+  --brand-accent:    #00E5FF;
+  --brand-bg-light:  #F0FAF7;
+  --brand-bg-dark:   #0D1B2A;
+  --brand-text:      #1A2B4A;
+}
+
+/* ── Fonts ────────────────────────────────────────────── */
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+.font-display {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+/* ── Animations ───────────────────────────────────────── */
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1);   opacity: 1; }
+  50%       { transform: scale(1.4); opacity: 0.6; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0);   }
+  50%       { transform: translateY(-12px); }
+}
+
+@keyframes draw-line {
+  from { stroke-dashoffset: 400; }
+  to   { stroke-dashoffset: 0; }
+}
+
+.animate-pulse-dot  { animation: pulse-dot 2s ease-in-out infinite; }
+.animate-float      { animation: float 4s ease-in-out infinite; }
+.animate-draw-line  {
+  stroke-dasharray: 400;
+  animation: draw-line 2s ease-out forwards;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
