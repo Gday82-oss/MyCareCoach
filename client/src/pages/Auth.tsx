@@ -38,6 +38,23 @@ export default function Auth({ initialMode = 'login' }: AuthProps) {
     return 'Une erreur est survenue. Veuillez réessayer.';
   };
 
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/app`,
+        },
+      });
+      if (error) throw error;
+    } catch (err: any) {
+      setError('Impossible de se connecter avec Google. Veuillez réessayer.');
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -57,7 +74,7 @@ export default function Auth({ initialMode = 'login' }: AuthProps) {
           password,
         });
         if (error) throw error;
-        navigate('/dashboard');
+        navigate('/app');
       } else {
         // Inscription
         const { error } = await supabase.auth.signUp({
@@ -193,7 +210,30 @@ export default function Auth({ initialMode = 'login' }: AuthProps) {
           </button>
         </form>
 
-        <div className="mt-6 text-center">
+        <div className="mt-6">
+          <div className="relative flex items-center gap-3 my-4">
+            <div className="flex-1 border-t border-gray-200" />
+            <span className="text-sm text-gray-400">ou</span>
+            <div className="flex-1 border-t border-gray-200" />
+          </div>
+
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-3 px-4 text-gray-700 font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
+          >
+            <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true">
+              <path fill="#4285F4" d="M47.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h13.2c-.6 3-2.3 5.5-4.9 7.2v6h7.9c4.6-4.3 7.3-10.6 7.3-17.2z"/>
+              <path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.9-6c-2.1 1.4-4.9 2.3-8 2.3-6.1 0-11.3-4.1-13.2-9.7H2.7v6.2C6.7 42.9 14.8 48 24 48z"/>
+              <path fill="#FBBC05" d="M10.8 28.8c-.5-1.4-.8-2.8-.8-4.3s.3-3 .8-4.3v-6.2H2.7C1 17.2 0 20.5 0 24s1 6.8 2.7 9.9l8.1-5.1z"/>
+              <path fill="#EA4335" d="M24 9.5c3.4 0 6.5 1.2 8.9 3.5l6.7-6.7C35.9 2.4 30.4 0 24 0 14.8 0 6.7 5.1 2.7 14.1l8.1 5.1C12.7 13.6 17.9 9.5 24 9.5z"/>
+            </svg>
+            Connexion avec Google
+          </button>
+        </div>
+
+        <div className="mt-4 text-center">
           <button
             onClick={() => setIsLogin(!isLogin)}
             className="text-emerald-600 hover:text-emerald-700 text-sm"

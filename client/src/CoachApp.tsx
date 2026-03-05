@@ -32,14 +32,14 @@ import EmailReminders from './pages/EmailReminders';
 import SettingsPage from './pages/Settings';
 
 const navItems = [
-  { path: '/', icon: LayoutDashboard, label: 'Dashboard' },
-  { path: '/clients', icon: Users, label: 'Clients' },
-  { path: '/seances', icon: Calendar, label: 'Séances' },
-  { path: '/programmes', icon: Dumbbell, label: 'Programmes' },
-  { path: '/metriques', icon: Activity, label: 'Métriques' },
-  { path: '/attestations', icon: FileText, label: 'Attestations' },
-  { path: '/emails', icon: Mail, label: 'Emails' },
-  { path: '/settings', icon: Settings, label: 'Paramètres' },
+  { path: '/app', icon: LayoutDashboard, label: 'Dashboard' },
+  { path: '/app/clients', icon: Users, label: 'Clients' },
+  { path: '/app/seances', icon: Calendar, label: 'Séances' },
+  { path: '/app/programmes', icon: Dumbbell, label: 'Programmes' },
+  { path: '/app/metriques', icon: Activity, label: 'Métriques' },
+  { path: '/app/attestations', icon: FileText, label: 'Attestations' },
+  { path: '/app/emails', icon: Mail, label: 'Emails' },
+  { path: '/app/settings', icon: Settings, label: 'Paramètres' },
 ];
 
 export default function CoachApp() {
@@ -56,7 +56,7 @@ export default function CoachApp() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate('/auth');
+    navigate('/login');
   };
 
   return (
@@ -221,14 +221,14 @@ export default function CoachApp() {
 
         <div className="p-8">
           <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/clients" element={<Clients />} />
-            <Route path="/seances" element={<Seances />} />
-            <Route path="/programmes" element={<Programmes />} />
-            <Route path="/metriques" element={<Metriques />} />
-            <Route path="/attestations" element={<Attestations />} />
-            <Route path="/emails" element={<EmailReminders />} />
-            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/app" element={<Dashboard />} />
+            <Route path="/app/clients" element={<Clients />} />
+            <Route path="/app/seances" element={<Seances />} />
+            <Route path="/app/programmes" element={<Programmes />} />
+            <Route path="/app/metriques" element={<Metriques />} />
+            <Route path="/app/attestations" element={<Attestations />} />
+            <Route path="/app/emails" element={<EmailReminders />} />
+            <Route path="/app/settings" element={<SettingsPage />} />
           </Routes>
         </div>
       </main>
