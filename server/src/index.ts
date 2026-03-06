@@ -81,7 +81,8 @@ app.get('/health', (req, res) => {
 
 // Route d'invitation client
 // Seul un coach connecté peut inviter un client
-app.post('/api/invite-client', authMiddleware, async (req: Request, res: Response) => {
+// Note: Nginx strip /api/ → Express reçoit /invite-client
+app.post('/invite-client', authMiddleware, async (req: Request, res: Response) => {
   const { email, prenom, nom, clientId } = req.body;
 
   if (!email || !clientId) {
