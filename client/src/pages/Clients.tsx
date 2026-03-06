@@ -21,6 +21,8 @@ interface Client {
   objectifs: string[];
   niveau: 'debutant' | 'intermediaire' | 'avance';
   created_at: string;
+  invite_sent?: boolean;
+  has_account?: boolean;
 }
 
 export default function Clients() {
@@ -28,6 +30,8 @@ export default function Clients() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [inviting, setInviting] = useState<string | null>(null);
+  const [inviteNotif, setInviteNotif] = useState<{ id: string; msg: string } | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -54,6 +58,49 @@ export default function Clients() {
       console.error('Erreur fetch clients:', error);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleInvite(client: Client) {
+    if (!client.email) {
+      alert('Ce client n\'a pas d\'adresse email. Ajoutez-en une avant d\'envoyer une invitation.');
+      return;
+    }
+
+    setInviting(client.id);
+    setInviteNotif(null);
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { error } = await supabase.functions.invoke('invite-client', {
+        body: {
+          clientId: client.id,
+          email: client.email,
+          prenom: client.prenom,
+          nom: client.nom,
+          coachId: user.id,
+        },
+      });
+
+      if (error) throw error;
+
+      // Mise à jour locale immédiate (pas besoin d'attendre le fetch)
+      setClients(prev =>
+        prev.map(c => c.id === client.id ? { ...c, invite_sent: true } : c)
+      );
+
+      setInviteNotif({
+        id: client.id,
+        msg: `Invitation envoyée à ${client.email}`,
+      });
+      setTimeout(() => setInviteNotif(null), 5000);
+
+    } catch (err: any) {
+      alert(`Erreur lors de l'invitation : ${err.message}`);
+    } finally {
+      setInviting(null);
     }
   }
 
@@ -112,6 +159,19 @@ export default function Clients() {
           Nouveau client
         </button>
       </div>
+
+      {/* Notification invitation envoyée */}
+      {inviteNotif && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0 }}
+          className="mb-4 p-4 bg-[#00C896]/10 border border-[#00C896]/30 rounded-xl text-[#00A87E] font-medium flex items-center gap-2"
+        >
+          <span>✅</span>
+          <span>{inviteNotif.msg}</span>
+        </motion.div>
+      )}
 
       {/* Search */}
       <div className="mb-6">
@@ -199,17 +259,44 @@ export default function Clients() {
               )}
 
               <div className="mt-4 pt-4 border-t border-gray-100 dark:border-[#2E3D55] flex gap-2">
-                <button 
+                <button
                   onClick={() => navigate(`/seances?client=${client.id}`)}
                   className="flex-1 py-2 text-sm text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
                 >
                   Planifier
                 </button>
-                <button 
+                <button
                   onClick={() => navigate(`/programmes?client=${client.id}`)}
                   className="flex-1 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                 >
                   Programme
+                </button>
+                <button
+                  onClick={() => handleInvite(client)}
+                  disabled={client.invite_sent || client.has_account || inviting === client.id || !client.email}
+                  title={
+                    !client.email ? 'Ajoutez un email à ce client pour l\'inviter'
+                    : client.has_account ? 'Ce client a déjà un compte'
+                    : client.invite_sent ? 'Invitation déjà envoyée'
+                    : 'Envoyer une invitation par email'
+                  }
+                  className={`flex-1 py-2 text-sm rounded-lg transition-colors flex items-center justify-center gap-1 ${
+                    client.has_account
+                      ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                      : client.invite_sent
+                        ? 'text-[#00C896] bg-[#00C896]/10 cursor-default'
+                        : !client.email
+                          ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                          : 'text-[#00C896] hover:bg-[#00C896]/10'
+                  }`}
+                >
+                  {inviting === client.id ? (
+                    <div className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin" />
+                  ) : client.invite_sent || client.has_account ? (
+                    '✓ Invité'
+                  ) : (
+                    '✉ Inviter'
+                  )}
                 </button>
               </div>
             </motion.div>

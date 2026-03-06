@@ -102,7 +102,7 @@ export default function Seances() {
           <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1))} className="p-2 hover:bg-gray-100 dark:bg-[#243044] rounded-lg">
             <ChevronLeft />
           </button>
-          <h2 className="text-xl font-semibold">{mois[currentDate.getMonth()]} {currentDate.getFullYear()}</h2>
+          <h2 className="text-xl font-semibold dark:text-white">{mois[currentDate.getMonth()]} {currentDate.getFullYear()}</h2>
           <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1))} className="p-2 hover:bg-gray-100 dark:bg-[#243044] rounded-lg">
             <ChevronRight />
           </button>

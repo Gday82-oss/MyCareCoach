@@ -10,6 +10,7 @@ import CoachApp from './CoachApp';
 import ClientPortal from './pages/ClientPortal';
 import ClientApp from './ClientApp';
 import ClientLogin from './pages/client-mobile/ClientLogin';
+import ClientSetup from './pages/client-mobile/ClientSetup';
 
 function ForgotPasswordWrapper() {
   const navigate = useNavigate();
@@ -27,8 +28,8 @@ function App() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       const currentUser = session?.user ?? null;
       setUser(currentUser);
-      if (currentUser?.email) {
-        checkUserType(currentUser.email);
+      if (currentUser) {
+        checkUserType(currentUser);
       } else {
         setUserType(null);
         setLoading(false);
@@ -38,28 +39,24 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  async function checkUserType(email: string) {
+  async function checkUserType(user: User) {
+    // Priorité : user_metadata.role (défini lors de l'invitation client)
+    if (user.user_metadata?.role === 'client') {
+      setUserType('client');
+      setLoading(false);
+      return;
+    }
+
+    // Fallback : vérification en base de données
     try {
       const { data: clientData, error: clientError } = await supabase
         .from('clients_coach')
         .select('id')
-        .eq('email', email)
+        .eq('email', user.email ?? '')
         .maybeSingle();
 
       if (clientData && !clientError) {
         setUserType('client');
-        setLoading(false);
-        return;
-      }
-
-      const { data: coachData, error: coachError } = await supabase
-        .from('coachs')
-        .select('id')
-        .eq('email', email)
-        .maybeSingle();
-
-      if (coachData && !coachError) {
-        setUserType('coach');
         setLoading(false);
         return;
       }
@@ -102,8 +99,9 @@ function App() {
         }
       />
 
-      {/* Page de connexion client (publique) */}
+      {/* Pages client publiques */}
       <Route path="/client/login" element={<ClientLogin />} />
+      <Route path="/client/setup" element={<ClientSetup />} />
 
       {/* Interface client mobile-first PWA */}
       <Route
