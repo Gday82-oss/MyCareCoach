@@ -30,9 +30,15 @@ export default function ClientLogin() {
     setError('');
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
-      navigate('/client');
+      // Redirection selon le rôle
+      const role = data.user?.user_metadata?.role;
+      if (role === 'client') {
+        navigate('/client');
+      } else {
+        navigate('/app');
+      }
     } catch (err: any) {
       setError(getErrorMessage(err.message || ''));
     } finally {

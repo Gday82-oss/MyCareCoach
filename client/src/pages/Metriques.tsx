@@ -145,7 +145,7 @@ export default function Metriques() {
       {/* Liste des métriques */}
       <div className="bg-white dark:bg-[#1A2535] rounded-xl shadow-sm border border-gray-100 dark:border-[#2E3D55] overflow-hidden">
         <div className="p-6 border-b border-gray-100 dark:border-[#2E3D55]">
-          <h2 className="text-lg font-semibold">Historique des mesures</h2>
+          <h2 className="text-lg font-semibold dark:text-white">Historique des mesures</h2>
         </div>
         
         {metriques.length === 0 ? (
@@ -162,7 +162,7 @@ export default function Metriques() {
                       <Calendar size={18} className="text-emerald-600" />
                     </div>
                     <div>
-                      <p className="font-medium">{new Date(m.date).toLocaleDateString('fr-FR')}</p>
+                      <p className="font-medium dark:text-white">{new Date(m.date).toLocaleDateString('fr-FR')}</p>
                       {m.client && <p className="text-sm text-gray-500 dark:text-[#8896A8]">{m.client.prenom} {m.client.nom}</p>}
                     </div>
                   </div>
@@ -183,7 +183,7 @@ export default function Metriques() {
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-[#1A2535] rounded-2xl p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <h2 className="text-2xl font-bold mb-6">Nouvelles métriques</h2>
+            <h2 className="text-2xl font-bold mb-6 dark:text-white">Nouvelles métriques</h2>
             <form onSubmit={async (e) => {
               e.preventDefault();
               const form = e.target as HTMLFormElement;

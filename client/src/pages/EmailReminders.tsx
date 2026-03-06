@@ -188,7 +188,7 @@ export default function EmailReminders() {
         <div className="flex gap-3">
           <button 
             onClick={() => setShowConfig(true)}
-            className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-[#2E3D55] rounded-xl hover:bg-gray-50 dark:bg-[#0F1923]"
+            className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-[#2E3D55] rounded-xl hover:bg-gray-50 dark:hover:bg-[#243044] dark:text-white"
           >
             <Settings size={18} />
             Configuration
@@ -213,7 +213,7 @@ export default function EmailReminders() {
             </div>
             <div>
               <p className="text-sm text-gray-500 dark:text-[#8896A8]">Total envoyés</p>
-              <p className="text-2xl font-bold">{logs.length}</p>
+              <p className="text-2xl font-bold dark:text-white">{logs.length}</p>
             </div>
           </div>
         </motion.div>
@@ -225,7 +225,7 @@ export default function EmailReminders() {
             </div>
             <div>
               <p className="text-sm text-gray-500 dark:text-[#8896A8]">Envoyés</p>
-              <p className="text-2xl font-bold">{logs.filter(l => l.statut === 'envoye').length}</p>
+              <p className="text-2xl font-bold dark:text-white">{logs.filter(l => l.statut === 'envoye').length}</p>
             </div>
           </div>
         </motion.div>
@@ -237,7 +237,7 @@ export default function EmailReminders() {
             </div>
             <div>
               <p className="text-sm text-gray-500 dark:text-[#8896A8]">En attente</p>
-              <p className="text-2xl font-bold">{logs.filter(l => l.statut === 'en_attente').length}</p>
+              <p className="text-2xl font-bold dark:text-white">{logs.filter(l => l.statut === 'en_attente').length}</p>
             </div>
           </div>
         </motion.div>
@@ -249,7 +249,7 @@ export default function EmailReminders() {
             </div>
             <div>
               <p className="text-sm text-gray-500 dark:text-[#8896A8]">Erreurs</p>
-              <p className="text-2xl font-bold">{logs.filter(l => l.statut === 'erreur').length}</p>
+              <p className="text-2xl font-bold dark:text-white">{logs.filter(l => l.statut === 'erreur').length}</p>
             </div>
           </div>
         </motion.div>
@@ -258,7 +258,7 @@ export default function EmailReminders() {
       {/* Historique */}
       <div className="bg-white dark:bg-[#1A2535] rounded-xl shadow-sm border border-gray-100 dark:border-[#2E3D55] overflow-hidden">
         <div className="p-6 border-b border-gray-100 dark:border-[#2E3D55]">
-          <h2 className="text-lg font-semibold">Historique des emails</h2>
+          <h2 className="text-lg font-semibold dark:text-white">Historique des emails</h2>
         </div>
 
         {logs.length === 0 ? (
@@ -277,7 +277,7 @@ export default function EmailReminders() {
                       <Mail size={18} className={log.statut === 'envoye' ? 'text-green-600' : 'text-gray-600 dark:text-[#A8B4C4]'} />
                     </div>
                     <div>
-                      <p className="font-medium">{getTypeLabel(log.type)}</p>
+                      <p className="font-medium dark:text-white">{getTypeLabel(log.type)}</p>
                       {log.client && (
                         <p className="text-sm text-gray-500 dark:text-[#8896A8]">{log.client.prenom} {log.client.nom} • {log.client.email}</p>
                       )}

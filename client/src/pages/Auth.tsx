@@ -75,14 +75,9 @@ export default function Auth({ initialMode = 'login' }: AuthProps) {
         });
         if (error) throw error;
 
-        // Vérifie si l'email appartient à un client
-        const { data: clientData } = await supabase
-          .from('clients_coach')
-          .select('id')
-          .eq('email', data.user?.email ?? '')
-          .maybeSingle();
-
-        if (clientData) {
+        // Redirection selon le rôle (défini dans user_metadata lors de l'invitation)
+        const role = data.user?.user_metadata?.role;
+        if (role === 'client') {
           navigate('/client');
         } else {
           navigate('/app');
