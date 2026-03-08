@@ -133,10 +133,20 @@ function Header() {
         </nav>
 
         {/* Actions desktop */}
-        <div className="hidden md:flex items-center gap-3">
-          <Link to="/login"
-            className="text-sm font-medium text-[#1A2B4A] hover:text-[#00C896] transition-colors px-3 py-2">
-            Connexion
+        <div className="hidden md:flex items-center gap-2">
+          <Link
+            to="/client/login"
+            className="text-sm font-semibold px-4 py-2 rounded-full border-2 transition-all duration-200 hover:scale-105"
+            style={{ borderColor: '#FF8C42', color: '#FF8C42' }}
+          >
+            Espace Client
+          </Link>
+          <Link
+            to="/login"
+            className="text-sm font-semibold px-4 py-2 rounded-full text-white transition-all duration-200 hover:scale-105 hover:shadow-lg"
+            style={{ background: '#1A2B4A' }}
+          >
+            Espace Coach
           </Link>
           <Link to="/register"
             className="text-sm font-semibold px-5 py-2.5 rounded-full text-white transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-[#00C896]/25"
@@ -168,9 +178,15 @@ function Header() {
             </a>
           ))}
           <div className="pt-2 flex flex-col gap-2">
+            <Link to="/client/login" onClick={() => setOpen(false)}
+              className="block text-center py-2.5 text-sm font-semibold rounded-lg border-2 transition-colors"
+              style={{ borderColor: '#FF8C42', color: '#FF8C42' }}>
+              Espace Client
+            </Link>
             <Link to="/login" onClick={() => setOpen(false)}
-              className="block text-center py-2.5 text-sm font-medium text-[#1A2B4A] border border-gray-200 rounded-lg hover:border-[#00C896] transition-colors">
-              Connexion
+              className="block text-center py-2.5 text-sm font-semibold text-white rounded-lg"
+              style={{ background: '#1A2B4A' }}>
+              Espace Coach
             </Link>
             <Link to="/register" onClick={() => setOpen(false)}
               className="block text-center py-2.5 text-sm font-semibold text-white rounded-lg"
@@ -571,12 +587,6 @@ function PricingCard({ name, price, period, description, features: pf, cta, high
 // ── Footer ───────────────────────────────────────────────
 
 function Footer() {
-  const footerLinks = {
-    Produit: ['Fonctionnalités', 'Tarifs', 'Nouveautés', 'Documentation'],
-    Légal:   ['CGU', 'Confidentialité', 'Mentions légales', 'Cookies'],
-    Contact: ['Support', 'contact@mycarecoach.app', 'Blog', 'Partenaires'],
-  };
-
   return (
     <footer style={{ background: '#0D1B2A' }} className="text-gray-400 py-16">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -588,23 +598,62 @@ function Footer() {
               La plateforme tout-en-un pour coachs sportifs.
               Sport-santé sur ordonnance · Remboursé mutuelle.
             </p>
+            <div className="flex gap-3 mt-5">
+              <Link to="/login"
+                className="text-xs font-semibold px-3 py-1.5 rounded-full text-white transition-colors hover:opacity-80"
+                style={{ background: '#1A2B4A', border: '1px solid rgba(255,255,255,0.15)' }}>
+                Espace Coach
+              </Link>
+              <Link to="/client/login"
+                className="text-xs font-semibold px-3 py-1.5 rounded-full transition-colors hover:opacity-80"
+                style={{ background: 'rgba(255,140,66,0.15)', color: '#FF8C42', border: '1px solid rgba(255,140,66,0.3)' }}>
+                Espace Client
+              </Link>
+            </div>
           </div>
 
-          {/* Colonnes de liens */}
-          {Object.entries(footerLinks).map(([col, links]) => (
-            <div key={col}>
-              <h4 className="font-display font-bold text-white text-sm mb-4">{col}</h4>
-              <ul className="space-y-2.5">
-                {links.map((link) => (
-                  <li key={link}>
-                    <a href="#" className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">
-                      {link}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {/* Produit */}
+          <div>
+            <h4 className="font-display font-bold text-white text-sm mb-4">Produit</h4>
+            <ul className="space-y-2.5">
+              <li><a href="#fonctionnalites" onClick={scrollToId('fonctionnalites')} className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">Fonctionnalités</a></li>
+              <li><a href="#tarifs" onClick={scrollToId('tarifs')} className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">Tarifs</a></li>
+              <li><a href="#temoignages" onClick={scrollToId('temoignages')} className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">Témoignages</a></li>
+              <li><Link to="/register" className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">Essai gratuit</Link></li>
+            </ul>
+          </div>
+
+          {/* Légal */}
+          <div>
+            <h4 className="font-display font-bold text-white text-sm mb-4">Légal</h4>
+            <ul className="space-y-2.5">
+              <li><a href="#" className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">CGU</a></li>
+              <li><a href="#" className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">Confidentialité</a></li>
+              <li><a href="#" className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">Mentions légales</a></li>
+              <li><a href="#" className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">Cookies</a></li>
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h4 className="font-display font-bold text-white text-sm mb-4">Contact</h4>
+            <ul className="space-y-2.5">
+              <li>
+                <a href="mailto:dayanguillaume82@gmail.com"
+                  className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">
+                  Nous contacter
+                </a>
+              </li>
+              <li>
+                <a href="mailto:dayanguillaume82@gmail.com"
+                  className="text-sm text-gray-500 hover:text-[#00C896] transition-colors break-all">
+                  dayanguillaume82@gmail.com
+                </a>
+              </li>
+              <li><a href="#" className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">Support</a></li>
+              <li><a href="#" className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">Partenaires</a></li>
+            </ul>
+          </div>
         </div>
 
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-600">

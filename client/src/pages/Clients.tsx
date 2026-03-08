@@ -269,13 +269,13 @@ export default function Clients() {
 
               <div className="mt-4 pt-4 border-t border-gray-100 dark:border-[#2E3D55] flex gap-2">
                 <button
-                  onClick={() => navigate(`/seances?client=${client.id}`)}
+                  onClick={() => navigate('/app/seances')}
                   className="flex-1 py-2.5 min-h-[44px] text-sm text-emerald-600 hover:bg-emerald-50 active:bg-emerald-100 rounded-lg transition-colors font-medium"
                 >
                   Planifier
                 </button>
                 <button
-                  onClick={() => navigate(`/programmes?client=${client.id}`)}
+                  onClick={() => navigate('/app/programmes')}
                   className="flex-1 py-2.5 min-h-[44px] text-sm text-blue-600 hover:bg-blue-50 active:bg-blue-100 rounded-lg transition-colors font-medium"
                 >
                   Programme
