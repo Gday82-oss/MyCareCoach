@@ -39,3 +39,11 @@ coverage/
 *.tar.gz
 frontend.tar.gz
 backend.tar.gz
+
+# Gros fichiers / fichiers personnels à ne pas versionner
+*.deb
+*.pdf
+*.m4a
+*.mp3
+*.mp4
+RESUME_SESSION_*.md

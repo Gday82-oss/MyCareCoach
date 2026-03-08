@@ -1,177 +1,186 @@
-# Supabase CLI
+# MyCareCoach
 
-[![Coverage Status](https://coveralls.io/repos/github/supabase/cli/badge.svg?branch=main)](https://coveralls.io/github/supabase/cli?branch=main) [![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/supabase-cli/setup-cli/master?style=flat-square&label=Bitbucket%20Canary)](https://bitbucket.org/supabase-cli/setup-cli/pipelines) [![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/sweatybridge%2Fsetup-cli?label=Gitlab%20Canary)
-](https://gitlab.com/sweatybridge/setup-cli/-/pipelines)
+**SaaS de gestion pour coachs santé & sport**
 
-[Supabase](https://supabase.io) is an open source Firebase alternative. We're building the features of Firebase using enterprise-grade open source tools.
+MyCareCoach est une application web complète permettant aux coachs de gérer leurs clients, planifier des séances, suivre les progrès et gérer la facturation — le tout depuis une interface moderne et intuitive.
 
-This repository contains all the functionality for Supabase CLI.
+Site en production : **[mycarecoach.app](https://mycarecoach.app)**
 
-- [x] Running Supabase locally
-- [x] Managing database migrations
-- [x] Creating and deploying Supabase Functions
-- [x] Generating types directly from your database schema
-- [x] Making authenticated HTTP requests to [Management API](https://supabase.com/docs/reference/api/introduction)
+---
 
-## Getting started
+## Fonctionnalités
 
-### Install the CLI
+**Interface Coach (accès `/app/*`)**
+- Dashboard avec statistiques temps réel (revenus, clients actifs, séances)
+- Gestion des clients (création, invitation par email, suivi)
+- Planification des séances
+- Création de programmes d'entraînement
+- Facturation et paiements
+- Métriques et attestations
 
-Available via [NPM](https://www.npmjs.com) as dev dependency. To install:
+**Interface Client mobile (accès `/client/*`)**
+- Connexion sécurisée par lien d'invitation
+- Consultation du programme du jour
+- Suivi des séances passées
+- Visualisation des progrès
+
+---
+
+## Stack technique
+
+| Couche | Technologie |
+|--------|-------------|
+| **Frontend** | React 19 + TypeScript + Vite |
+| **UI / Style** | Tailwind CSS + Framer Motion + Recharts |
+| **Routing** | React Router v7 |
+| **Backend / BDD** | Supabase (PostgreSQL + Auth + Storage) |
+| **API serveur** | Node.js + Express (dossier `backend/`) |
+| **Hébergement** | VPS (Nginx) → mycarecoach.app |
+
+---
+
+## Architecture du projet
+
+```
+MyCareCoach/
+├── client/                   # Application React (frontend)
+│   ├── src/
+│   │   ├── App.tsx           # Routing principal (public / coach / client)
+│   │   ├── CoachApp.tsx      # Layout coach (sidebar, header, avatar)
+│   │   ├── ClientApp.tsx     # Layout app mobile client
+│   │   ├── pages/
+│   │   │   ├── LandingPage.tsx
+│   │   │   ├── Dashboard.tsx
+│   │   │   ├── Clients.tsx
+│   │   │   ├── Seances.tsx
+│   │   │   ├── Programmes.tsx
+│   │   │   ├── Paiements.tsx
+│   │   │   ├── Settings.tsx
+│   │   │   └── client-mobile/    # Pages interface client
+│   │   │       ├── ClientToday.tsx
+│   │   │       ├── ClientSeancesMobile.tsx
+│   │   │       ├── ClientProgrammeMobile.tsx
+│   │   │       └── ClientProgresMobile.tsx
+│   │   ├── components/       # Composants réutilisables
+│   │   ├── hooks/            # Custom hooks React
+│   │   ├── lib/              # Client Supabase
+│   │   └── contexts/         # Contextes React (auth, thème…)
+│   ├── public/
+│   └── vite.config.ts
+├── backend/                  # Serveur Node.js + Express
+│   └── scripts/              # Scripts utilitaires
+├── server/                   # Ancienne couche serveur (tRPC)
+├── shared/                   # Types TypeScript partagés
+├── docs/                     # Documentation interne
+├── nginx.conf                # Configuration Nginx (VPS)
+├── deploy-prod.sh            # Script de déploiement principal
+├── backup-db.sh              # Backup base de données
+└── supabase_schema.sql       # Schéma SQL complet
+```
+
+---
+
+## Installation locale
+
+### Prérequis
+
+- Node.js ≥ 20
+- npm ≥ 9
+- Un projet [Supabase](https://supabase.com) configuré
+
+### 1. Cloner le dépôt
 
 ```bash
-npm i supabase --save-dev
+git clone https://github.com/Gday82-oss/MyCareCoach.git
+cd MyCareCoach
 ```
 
-When installing with yarn 4, you need to disable experimental fetch with the following nodejs config.
-
-```
-NODE_OPTIONS=--no-experimental-fetch yarn add supabase
-```
-
-> **Note**
-For Bun versions below v1.0.17, you must add `supabase` as a [trusted dependency](https://bun.sh/guides/install/trusted) before running `bun add -D supabase`.
-
-<details>
-  <summary><b>macOS</b></summary>
-
-  Available via [Homebrew](https://brew.sh). To install:
-
-  ```sh
-  brew install supabase/tap/supabase
-  ```
-
-  To install the beta release channel:
-  
-  ```sh
-  brew install supabase/tap/supabase-beta
-  brew link --overwrite supabase-beta
-  ```
-  
-  To upgrade:
-
-  ```sh
-  brew upgrade supabase
-  ```
-</details>
-
-<details>
-  <summary><b>Windows</b></summary>
-
-  Available via [Scoop](https://scoop.sh). To install:
-
-  ```powershell
-  scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
-  scoop install supabase
-  ```
-
-  To upgrade:
-
-  ```powershell
-  scoop update supabase
-  ```
-</details>
-
-<details>
-  <summary><b>Linux</b></summary>
-
-  Available via [Homebrew](https://brew.sh) and Linux packages.
-
-  #### via Homebrew
-
-  To install:
-
-  ```sh
-  brew install supabase/tap/supabase
-  ```
-
-  To upgrade:
-
-  ```sh
-  brew upgrade supabase
-  ```
-
-  #### via Linux packages
-
-  Linux packages are provided in [Releases](https://github.com/supabase/cli/releases). To install, download the `.apk`/`.deb`/`.rpm`/`.pkg.tar.zst` file depending on your package manager and run the respective commands.
-
-  ```sh
-  sudo apk add --allow-untrusted <...>.apk
-  ```
-
-  ```sh
-  sudo dpkg -i <...>.deb
-  ```
-
-  ```sh
-  sudo rpm -i <...>.rpm
-  ```
-
-  ```sh
-  sudo pacman -U <...>.pkg.tar.zst
-  ```
-</details>
-
-<details>
-  <summary><b>Other Platforms</b></summary>
-
-  You can also install the CLI via [go modules](https://go.dev/ref/mod#go-install) without the help of package managers.
-
-  ```sh
-  go install github.com/supabase/cli@latest
-  ```
-
-  Add a symlink to the binary in `$PATH` for easier access:
-
-  ```sh
-  ln -s "$(go env GOPATH)/bin/cli" /usr/bin/supabase
-  ```
-
-  This works on other non-standard Linux distros.
-</details>
-
-<details>
-  <summary><b>Community Maintained Packages</b></summary>
-
-  Available via [pkgx](https://pkgx.sh/). Package script [here](https://github.com/pkgxdev/pantry/blob/main/projects/supabase.com/cli/package.yml).
-  To install in your working directory:
-
-  ```bash
-  pkgx install supabase
-  ```
-
-  Available via [Nixpkgs](https://nixos.org/). Package script [here](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/tools/supabase-cli/default.nix).
-</details>
-
-### Run the CLI
+### 2. Installer les dépendances frontend
 
 ```bash
-supabase bootstrap
+cd client
+npm install
 ```
 
-Or using npx:
+### 3. Configurer les variables d'environnement
+
+Créer un fichier `client/.env` :
+
+```env
+VITE_SUPABASE_URL=https://xxxxxxxxxxxx.supabase.co
+VITE_SUPABASE_ANON_KEY=votre_clé_anon_supabase
+VITE_API_URL=http://localhost:3001
+```
+
+> Ne jamais committer ce fichier — il est dans le `.gitignore`
+
+### 4. Lancer en développement
 
 ```bash
-npx supabase bootstrap
+cd client
+npm run dev
 ```
 
-The bootstrap command will guide you through the process of setting up a Supabase project using one of the [starter](https://github.com/supabase-community/supabase-samples/blob/main/samples.json) templates.
+L'application est disponible sur `http://localhost:5173`
 
-## Docs
+---
 
-Command & config reference can be found [here](https://supabase.com/docs/reference/cli/about).
+## Déploiement en production
 
-## Breaking changes
+Le déploiement se fait via le script `deploy-prod.sh` depuis la machine locale :
 
-We follow semantic versioning for changes that directly impact CLI commands, flags, and configurations.
+```bash
+# Frontend uniquement
+VPS_HOST=76.13.61.89 ./deploy-prod.sh frontend
 
-However, due to dependencies on other service images, we cannot guarantee that schema migrations, seed.sql, and generated types will always work for the same CLI major version. If you need such guarantees, we encourage you to pin a specific version of CLI in package.json.
+# Backend uniquement
+VPS_HOST=76.13.61.89 ./deploy-prod.sh backend
 
-## Developing
-
-To run from source:
-
-```sh
-# Go >= 1.22
-go run . help
+# Tout déployer
+VPS_HOST=76.13.61.89 ./deploy-prod.sh all
 ```
+
+Le script :
+1. Vérifie les prérequis (Node.js, PM2)
+2. Build l'application (`npm run build`)
+3. Transfère les fichiers sur le VPS via `scp`
+4. Configure Nginx pour servir l'application
+5. (Re)démarre le serveur API avec PM2
+
+### Variables d'environnement nécessaires sur le VPS
+
+```env
+# Sur le VPS, dans /opt/mycarecoach/.env
+SUPABASE_URL=https://xxxxxxxxxxxx.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=votre_clé_service_role
+PORT=3001
+```
+
+---
+
+## Base de données
+
+Le schéma complet est dans `supabase_schema.sql`.
+
+Tables principales :
+- `coachs` — profils des coachs (email, nom, prénom, téléphone, siret, adresse)
+- `clients` — clients rattachés à un coach
+- `seances` — séances planifiées / passées
+- `factures` — facturation
+
+La sécurité des données est gérée par les **Row Level Security (RLS)** policies de Supabase — chaque coach ne voit que ses propres données.
+
+---
+
+## Contribution
+
+Les Pull Requests sont bienvenues. Merci de :
+1. Créer une branche à partir de `main`
+2. Nommer clairement vos commits (ex: `feat: ajout export PDF`, `fix: correction bug login`)
+3. Tester avant de soumettre la PR
+
+---
+
+## Licence
+
+Ce projet est sous licence propriétaire. Tous droits réservés © 2025 MyCareCoach.
