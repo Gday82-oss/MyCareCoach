@@ -136,8 +136,7 @@ function Header() {
         <div className="hidden md:flex items-center gap-2">
           <Link
             to="/client/login"
-            className="text-sm font-semibold px-4 py-2 rounded-full border-2 transition-all duration-200 hover:scale-105"
-            style={{ borderColor: '#FF8C42', color: '#FF8C42' }}
+            className="text-sm font-semibold px-4 py-2 rounded-full border-2 transition-all duration-200 hover:scale-105 bg-[#7C3AED] text-white border-[#7C3AED] hover:bg-[#6D28D9]"
           >
             Espace Client
           </Link>
@@ -179,8 +178,7 @@ function Header() {
           ))}
           <div className="pt-2 flex flex-col gap-2">
             <Link to="/client/login" onClick={() => setOpen(false)}
-              className="block text-center py-2.5 text-sm font-semibold rounded-lg border-2 transition-colors"
-              style={{ borderColor: '#FF8C42', color: '#FF8C42' }}>
+              className="block text-center py-2.5 text-sm font-semibold rounded-full border-2 transition-colors bg-[#7C3AED] text-white border-[#7C3AED] hover:bg-[#6D28D9]">
               Espace Client
             </Link>
             <Link to="/login" onClick={() => setOpen(false)}
@@ -605,8 +603,7 @@ function Footer() {
                 Espace Coach
               </Link>
               <Link to="/client/login"
-                className="text-xs font-semibold px-3 py-1.5 rounded-full transition-colors hover:opacity-80"
-                style={{ background: 'rgba(255,140,66,0.15)', color: '#FF8C42', border: '1px solid rgba(255,140,66,0.3)' }}>
+                className="text-xs font-semibold px-3 py-1.5 rounded-full transition-colors bg-[#7C3AED] text-white border border-[#7C3AED] hover:bg-[#6D28D9]">
                 Espace Client
               </Link>
             </div>
@@ -639,15 +636,15 @@ function Footer() {
             <h4 className="font-display font-bold text-white text-sm mb-4">Contact</h4>
             <ul className="space-y-2.5">
               <li>
-                <a href="mailto:dayanguillaume82@gmail.com"
+                <a href="mailto:contact@mycarecoach.app"
                   className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">
                   Nous contacter
                 </a>
               </li>
               <li>
-                <a href="mailto:dayanguillaume82@gmail.com"
+                <a href="mailto:contact@mycarecoach.app"
                   className="text-sm text-gray-500 hover:text-[#00C896] transition-colors break-all">
-                  dayanguillaume82@gmail.com
+                  contact@mycarecoach.app
                 </a>
               </li>
               <li><a href="#" className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">Support</a></li>

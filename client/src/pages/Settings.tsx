@@ -257,7 +257,7 @@ export default function Settings() {
   ];
 
   return (
-    <div className="max-w-2xl mx-auto py-2">
+    <div className="max-w-2xl mx-auto px-4 md:px-0 py-4 md:py-8">
       <AnimatePresence>
         {toast && <Toast msg={toast.msg} ok={toast.ok} />}
       </AnimatePresence>
@@ -338,7 +338,7 @@ export default function Settings() {
 
           {/* Formulaire */}
           <div className="p-6 space-y-5">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium text-gray-500 dark:text-[#8896A8] mb-1.5">Prénom</label>
                 <div className="relative">

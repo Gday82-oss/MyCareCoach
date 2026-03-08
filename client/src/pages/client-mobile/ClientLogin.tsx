@@ -24,26 +24,45 @@ export default function ClientLogin() {
     return 'Une erreur est survenue. Veuillez réessayer.';
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const doLogin = async () => {
+    console.log('[ClientLogin] doLogin déclenché, email:', email);
+    if (loading) return;
     setLoading(true);
     setError('');
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw error;
-      // Redirection selon le rôle
-      const role = data.user?.user_metadata?.role;
-      if (role === 'client') {
-        navigate('/client');
-      } else {
-        navigate('/app');
+      console.log('[ClientLogin] Appel signInWithPassword...');
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      console.log('[ClientLogin] Réponse Supabase:', { user: data?.user?.id, error: signInError?.message });
+
+      if (signInError) throw signInError;
+
+      if (!data.user) {
+        setError('Erreur lors de la connexion.');
+        return;
       }
+
+      const userRole = data.user.user_metadata?.role;
+      console.log('[ClientLogin] Rôle utilisateur:', userRole);
+
+      if (userRole !== 'client') {
+        await supabase.auth.signOut();
+        setError('Vous n\'êtes pas un client. Rendez-vous sur /login pour un coach.');
+        return;
+      }
+
+      console.log('[ClientLogin] → redirection vers /client');
+      navigate('/client');
     } catch (err: any) {
       setError(getErrorMessage(err.message || ''));
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    doLogin();
   };
 
   return (
@@ -113,10 +132,10 @@ export default function ClientLogin() {
             />
           </div>
 
-          <motion.button
-            type="submit"
+          <button
+            type="button"
             disabled={loading}
-            whileTap={{ scale: 0.97 }}
+            onClick={doLogin}
             className="w-full bg-[#00C896] text-white py-3.5 rounded-2xl font-semibold flex items-center justify-center gap-2 shadow-lg shadow-[#00C896]/30 disabled:opacity-60 disabled:cursor-not-allowed mt-2 transition-opacity hover:opacity-90"
           >
             {loading ? (
@@ -127,7 +146,7 @@ export default function ClientLogin() {
                 Se connecter
               </>
             )}
-          </motion.button>
+          </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-gray-400">

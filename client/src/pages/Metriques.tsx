@@ -80,15 +80,16 @@ export default function Metriques() {
   if (loading) return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div></div>;
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className="p-4 md:p-8">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6 md:mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-[#E8EDF5]">Métriques</h1>
+          <h1 className="text-xl md:text-3xl font-bold text-gray-800 dark:text-[#E8EDF5]">Métriques</h1>
           <p className="text-gray-600 dark:text-[#A8B4C4] mt-1">Suivi de la progression</p>
         </div>
-        <button onClick={() => setShowAddModal(true)} className="flex items-center gap-2 bg-emerald-500 text-white px-6 py-3 rounded-xl hover:bg-emerald-600 shadow-lg shadow-emerald-500/25">
+        <button onClick={() => setShowAddModal(true)} className="flex items-center gap-2 bg-emerald-500 text-white px-4 md:px-6 py-3 rounded-xl hover:bg-emerald-600 shadow-lg shadow-emerald-500/25 min-h-[44px]">
           <Plus size={20} />
-          Ajouter des métriques
+          <span className="hidden sm:inline">Ajouter des métriques</span>
+          <span className="sm:hidden">Ajouter</span>
         </button>
       </div>
 
@@ -167,10 +168,10 @@ export default function Metriques() {
                     </div>
                   </div>
                   
-                  <div className="flex gap-6 text-sm">
+                  <div className="flex flex-wrap gap-2 md:gap-6 text-sm">
                     {m.poids && <span className="text-gray-600 dark:text-[#A8B4C4]"><strong>{m.poids}kg</strong></span>}
-                    {m.niveau_energie && <span className="text-amber-600">Énergie: {m.niveau_energie}/10</span>}
-                    {m.qualite_sommeil && <span className="text-purple-600">Sommeil: {m.qualite_sommeil}/10</span>}
+                    {m.niveau_energie && <span className="text-amber-600">E: {m.niveau_energie}/10</span>}
+                    {m.qualite_sommeil && <span className="text-purple-600">S: {m.qualite_sommeil}/10</span>}
                   </div>
                 </div>
               </div>
@@ -181,8 +182,8 @@ export default function Metriques() {
 
       {/* Add Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-[#1A2535] rounded-2xl p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/50 flex md:items-center md:justify-center items-end z-50">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-[#1A2535] rounded-t-2xl md:rounded-2xl p-6 md:p-8 w-full md:max-w-lg max-h-[90vh] overflow-y-auto">
             <h2 className="text-2xl font-bold mb-6 dark:text-white">Nouvelles métriques</h2>
             <form onSubmit={async (e) => {
               e.preventDefault();

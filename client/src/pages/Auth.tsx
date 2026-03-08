@@ -69,19 +69,25 @@ export default function Auth({ initialMode = 'login' }: AuthProps) {
     try {
       if (isLogin) {
         // Connexion — redirige selon le rôle (client ou coach)
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { data, error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
-        if (error) throw error;
+        if (signInError) throw signInError;
 
-        // Redirection selon le rôle (défini dans user_metadata lors de l'invitation)
+        if (!data.user) {
+          setError('Erreur lors de la connexion.');
+          return;
+        }
+
         const role = data.user?.user_metadata?.role;
         if (role === 'client') {
-          navigate('/client');
-        } else {
-          navigate('/app');
+          await supabase.auth.signOut();
+          setError('NOT_COACH');
+          return;
         }
+
+        navigate('/app');
       } else {
         // Inscription
         const { error } = await supabase.auth.signUp({
@@ -124,7 +130,19 @@ export default function Auth({ initialMode = 'login' }: AuthProps) {
 
         {error && (
           <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-sm">
-            {error}
+            {error === 'NOT_COACH' ? (
+              <>
+                Vous n'êtes pas un coach. Rendez-vous sur l'interface client :{' '}
+                <a
+                  href="/client/login"
+                  className="underline font-medium hover:text-red-800"
+                >
+                  https://mycarecoach.app/client/login
+                </a>
+              </>
+            ) : (
+              error
+            )}
           </div>
         )}
 

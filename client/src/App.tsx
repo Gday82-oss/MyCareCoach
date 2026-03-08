@@ -99,8 +99,15 @@ function App() {
         }
       />
 
-      {/* Pages client publiques */}
-      <Route path="/client/login" element={<ClientLogin />} />
+      {/* Pages client publiques — redirige si déjà connecté en tant que client */}
+      <Route
+        path="/client/login"
+        element={
+          user && userType === 'client'
+            ? <Navigate to="/client" replace />
+            : <ClientLogin />
+        }
+      />
       <Route path="/client/setup" element={<ClientSetup />} />
 
       {/* Interface client mobile-first PWA */}

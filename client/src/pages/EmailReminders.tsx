@@ -179,24 +179,24 @@ export default function EmailReminders() {
   }
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className="p-4 md:p-8">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6 md:mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-[#E8EDF5]">Email Reminders</h1>
+          <h1 className="text-xl md:text-3xl font-bold text-gray-800 dark:text-[#E8EDF5]">Email Reminders</h1>
           <p className="text-gray-600 dark:text-[#A8B4C4] mt-1">Automatisation des rappels clients</p>
         </div>
-        <div className="flex gap-3">
-          <button 
+        <div className="flex gap-2 md:gap-3">
+          <button
             onClick={() => setShowConfig(true)}
-            className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-[#2E3D55] rounded-xl hover:bg-gray-50 dark:hover:bg-[#243044] dark:text-white"
+            className="flex items-center gap-2 px-3 md:px-4 py-2.5 border border-gray-300 dark:border-[#2E3D55] rounded-xl hover:bg-gray-50 dark:hover:bg-[#243044] dark:text-white min-h-[44px]"
           >
             <Settings size={18} />
-            Configuration
+            <span className="hidden sm:inline">Configuration</span>
           </button>
-          <button 
+          <button
             onClick={sendTestEmail}
             disabled={sending}
-            className="flex items-center gap-2 bg-emerald-500 text-white px-4 py-2 rounded-xl hover:bg-emerald-600 disabled:opacity-50"
+            className="flex items-center gap-2 bg-emerald-500 text-white px-3 md:px-4 py-2.5 rounded-xl hover:bg-emerald-600 disabled:opacity-50 min-h-[44px]"
           >
             <Send size={18} />
             {sending ? 'Envoi...' : 'Test'}
@@ -286,12 +286,12 @@ export default function EmailReminders() {
                       )}
                     </div>
                   </div>
-                  <div className="flex items-center gap-4">
+                  <div className="flex flex-col items-end gap-1 shrink-0">
                     <span className={`text-xs px-2 py-1 rounded-full ${getStatutColor(log.statut)}`}>
                       {log.statut}
                     </span>
-                    <span className="text-sm text-gray-400 dark:text-[#6B7A8D]">
-                      {new Date(log.date_envoi).toLocaleString('fr-FR')}
+                    <span className="text-xs text-gray-400 dark:text-[#6B7A8D]">
+                      {new Date(log.date_envoi).toLocaleDateString('fr-FR')}
                     </span>
                   </div>
                 </div>
@@ -303,8 +303,8 @@ export default function EmailReminders() {
 
       {/* Config Modal */}
       {showConfig && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-[#1A2535] rounded-2xl p-8 w-full max-w-md">
+        <div className="fixed inset-0 bg-black/50 flex md:items-center md:justify-center items-end z-50">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-[#1A2535] rounded-t-2xl md:rounded-2xl p-6 md:p-8 w-full md:max-w-md">
             <h2 className="text-2xl font-bold mb-6">Configuration emails</h2>
             
             <div className="space-y-4">

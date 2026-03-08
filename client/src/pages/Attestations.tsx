@@ -88,15 +88,16 @@ Date d'émission: ${new Date(attestation.date_emission).toLocaleDateString('fr-F
   if (loading) return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div></div>;
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className="p-4 md:p-8">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6 md:mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-[#E8EDF5]">Attestations</h1>
+          <h1 className="text-xl md:text-3xl font-bold text-gray-800 dark:text-[#E8EDF5]">Attestations</h1>
           <p className="text-gray-600 dark:text-[#A8B4C4] mt-1">Documents pour remboursement mutuelle</p>
         </div>
-        <button onClick={() => setShowGenerateModal(true)} className="flex items-center gap-2 bg-emerald-500 text-white px-6 py-3 rounded-xl hover:bg-emerald-600 shadow-lg shadow-emerald-500/25">
+        <button onClick={() => setShowGenerateModal(true)} className="flex items-center gap-2 bg-emerald-500 text-white px-4 md:px-6 py-3 rounded-xl hover:bg-emerald-600 shadow-lg shadow-emerald-500/25 min-h-[44px]">
           <Plus size={20} />
-          Générer attestation
+          <span className="hidden sm:inline">Générer attestation</span>
+          <span className="sm:hidden">Générer</span>
         </button>
       </div>
 
@@ -175,8 +176,8 @@ Date d'émission: ${new Date(attestation.date_emission).toLocaleDateString('fr-F
 
       {/* Generate Modal */}
       {showGenerateModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-[#1A2535] rounded-2xl p-8 w-full max-w-md">
+        <div className="fixed inset-0 bg-black/50 flex md:items-center md:justify-center items-end z-50">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-[#1A2535] rounded-t-2xl md:rounded-2xl p-6 md:p-8 w-full md:max-w-md">
             <h2 className="text-2xl font-bold mb-6">Générer attestation</h2>
             <form onSubmit={async (e) => {
               e.preventDefault();
