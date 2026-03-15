@@ -1,12 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabaseClient as supabase } from '../../lib/supabase';
 import { useClientData, calcStreak } from '../../hooks/useClientData';
-import { motion } from 'framer-motion';
-import { TrendingUp, Flame, Trophy, Target, Star, Zap, Crown, Medal, Camera, Lock } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  TrendingUp, Flame, Trophy, Target, Star, Zap, Crown, Medal,
+  Camera, Lock, Plus, Check, AlertCircle, ChevronDown, ChevronUp,
+} from 'lucide-react';
 import { XAxis, YAxis, ResponsiveContainer, AreaChart, Area, Tooltip, CartesianGrid } from 'recharts';
 
 interface ClientProgresMobileProps {
   client: { id: string; prenom: string; nom: string };
 }
+
+interface MetriqueRecord {
+  id: string;
+  date: string;
+  poids?: number;
+  tour_de_taille?: number;
+  tour_de_hanches?: number;
+  masse_grasse?: number;
+  note?: string;
+}
+
+const TODAY = new Date().toISOString().split('T')[0];
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -18,29 +34,125 @@ const itemVariants = {
 };
 
 const badgesConfig = [
-  { id: 1, icon: Trophy, nom: '1ère séance', desc: 'Première séance', obtenu: true, color: '#FF8C42' },
-  { id: 2, icon: Flame, nom: '7 jours', desc: 'Streak semaine', obtenu: true, color: '#FF8C42' },
-  { id: 3, icon: Zap, nom: '10 séances', desc: 'Assiduité', obtenu: true, color: '#00C896' },
-  { id: 4, icon: Target, nom: 'Objectif ✓', desc: 'Premier objectif', obtenu: true, color: '#00C896' },
-  { id: 5, icon: Crown, nom: '100 séances', desc: 'Champion', obtenu: false, color: '#6B7A8D' },
-  { id: 6, icon: Medal, nom: 'Force +20%', desc: 'Progression', obtenu: false, color: '#6B7A8D' },
+  { id: 1, icon: Trophy, nom: '1ère séance',  desc: 'Première séance', obtenu: true,  color: '#FF8C42' },
+  { id: 2, icon: Flame,  nom: '7 jours',      desc: 'Streak semaine',  obtenu: true,  color: '#FF8C42' },
+  { id: 3, icon: Zap,    nom: '10 séances',   desc: 'Assiduité',       obtenu: true,  color: '#00C896' },
+  { id: 4, icon: Target, nom: 'Objectif ✓',   desc: 'Premier objectif',obtenu: true,  color: '#00C896' },
+  { id: 5, icon: Crown,  nom: '100 séances',  desc: 'Champion',        obtenu: false, color: '#6B7A8D' },
+  { id: 6, icon: Medal,  nom: 'Force +20%',   desc: 'Progression',     obtenu: false, color: '#6B7A8D' },
 ];
 
+// ── Helpers ──────────────────────────────────────────────
+
+function formatDate(iso: string) {
+  return new Date(iso + 'T00:00:00').toLocaleDateString('fr-FR', {
+    day: '2-digit', month: 'short', year: 'numeric',
+  });
+}
+
+function formatDateShort(iso: string) {
+  return new Date(iso + 'T00:00:00').toLocaleDateString('fr-FR', {
+    day: '2-digit', month: '2-digit',
+  });
+}
+
+// ── Composant principal ───────────────────────────────────
+
 export default function ClientProgresMobile({ client }: ClientProgresMobileProps) {
-  const { seances, metriques, loading } = useClientData(client.id);
+  // Séances via useClientData (stats séances uniquement)
+  const { seances, loading: loadingSeances } = useClientData(client.id);
+
+  // Métriques gérées localement via API backend (supabaseAdmin contourne RLS)
+  const [metriques, setMetriques] = useState<MetriqueRecord[]>([]);
+  const [loadingMetriques, setLoadingMetriques] = useState(true);
+
+  // Formulaire
+  const [showForm, setShowForm] = useState(false);
+  const [formPoids, setFormPoids] = useState('');
+  const [formTaille, setFormTaille] = useState('');
+  const [formHanches, setFormHanches] = useState('');
+  const [formMasseGrasse, setFormMasseGrasse] = useState('');
+  const [formNote, setFormNote] = useState('');
+  const [formDate, setFormDate] = useState(TODAY);
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [erreur, setErreur] = useState('');
+
+  // Photos
   const [showPhotos, setShowPhotos] = useState(false);
 
+  useEffect(() => { fetchMetriques(); }, []);
+
+  async function fetchMetriques() {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) { setLoadingMetriques(false); return; }
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/client/metriques`, {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (res.ok) {
+        const json = await res.json();
+        setMetriques(json.metriques || []);
+      }
+    } catch (e) {
+      console.error('[ClientProgres] fetchMetriques:', e);
+    } finally {
+      setLoadingMetriques(false);
+    }
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!formPoids.trim()) { setErreur('Le poids est obligatoire.'); return; }
+    setErreur('');
+    setSubmitting(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const body: Record<string, string> = { date: formDate, poids: formPoids };
+      if (formTaille)      body.tour_de_taille  = formTaille;
+      if (formHanches)     body.tour_de_hanches = formHanches;
+      if (formMasseGrasse) body.masse_grasse     = formMasseGrasse;
+      if (formNote.trim()) body.note             = formNote.trim();
+
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/client/metriques`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (res.ok) {
+        setSuccess(true);
+        setFormPoids(''); setFormTaille(''); setFormHanches('');
+        setFormMasseGrasse(''); setFormNote(''); setFormDate(TODAY);
+        await fetchMetriques();
+        setTimeout(() => { setSuccess(false); setShowForm(false); }, 2000);
+      } else {
+        const json = await res.json();
+        setErreur(json.error || 'Erreur lors de l\'enregistrement.');
+      }
+    } catch {
+      setErreur('Erreur réseau. Vérifiez votre connexion.');
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  // ── Stats séances ──────────────────────────────────────
   const streak = calcStreak(seances);
   const thisMonth = new Date().toISOString().slice(0, 7);
   const seancesCeMois = seances.filter(s => s.fait && s.date.startsWith(thisMonth)).length;
   const seancesTotal = seances.filter(s => s.fait).length;
-
-  const seancesPassees = seances.filter(s => s.date <= new Date().toISOString().split('T')[0]).length;
+  const seancesPassees = seances.filter(s => s.date <= TODAY).length;
   const regularite = seancesPassees > 0 ? Math.round((seancesTotal / seancesPassees) * 100) : 0;
 
-  const poidsData = metriques
+  // ── Données graphique (métriques ASC pour le graphique) ──
+  const poidsData = [...metriques]
     .filter(m => m.poids != null)
-    .map((m, idx) => ({ date: `S${idx + 1}`, poids: m.poids as number }));
+    .reverse()
+    .map(m => ({ date: formatDateShort(m.date), poids: m.poids as number }));
 
   const seancesParSemaine = (() => {
     const map: Record<string, number> = {};
@@ -52,22 +164,29 @@ export default function ClientProgresMobile({ client }: ClientProgresMobileProps
     return Object.entries(map).slice(-8).map(([semaine, count]) => ({ semaine, count }));
   })();
 
-  const evolution = poidsData.length >= 2
-    ? (poidsData[0].poids - poidsData[poidsData.length - 1].poids).toFixed(1)
+  // évolution = dernier poids - premier poids (négatif = perte de poids)
+  const evolutionVal = poidsData.length >= 2
+    ? (poidsData[poidsData.length - 1].poids - poidsData[0].poids)
     : null;
+
+  const loading = loadingSeances || loadingMetriques;
 
   if (loading) {
     return (
       <div className="flex items-center justify-center" style={{ minHeight: '60vh' }}>
-        <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
           className="w-10 h-10 border-4 rounded-full"
-          style={{ borderColor: '#00C896', borderTopColor: 'transparent' }} />
+          style={{ borderColor: '#00C896', borderTopColor: 'transparent' }}
+        />
       </div>
     );
   }
 
   return (
     <div style={{ backgroundColor: '#F0FAF7' }}>
+
       {/* ══ HEADER ══ */}
       <div
         className="relative overflow-hidden rounded-b-[40px] md:rounded-none"
@@ -82,7 +201,7 @@ export default function ClientProgresMobile({ client }: ClientProgresMobileProps
             <p className="mt-1 text-sm" style={{ color: 'rgba(255,255,255,0.75)' }}>
               {new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
             </p>
-            {evolution != null && (
+            {evolutionVal !== null && (
               <div className="mt-3 flex items-baseline gap-2">
                 <motion.span
                   initial={{ scale: 0 }}
@@ -90,7 +209,7 @@ export default function ClientProgresMobile({ client }: ClientProgresMobileProps
                   transition={{ type: 'spring' as const, stiffness: 200, delay: 0.2 }}
                   className="text-4xl md:text-5xl font-bold text-white"
                 >
-                  -{evolution}
+                  {evolutionVal > 0 ? '+' : ''}{evolutionVal.toFixed(1)}
                 </motion.span>
                 <span className="text-xl text-white/70">kg</span>
                 <span className="text-sm text-white/60 hidden md:inline">depuis le début</span>
@@ -107,13 +226,191 @@ export default function ClientProgresMobile({ client }: ClientProgresMobileProps
         animate="visible"
         className="max-w-full md:max-w-[700px] lg:max-w-[1100px] mx-auto px-4 md:px-8 lg:px-12 mt-5 space-y-5"
       >
-        {/* Stats highlights — 2 colonnes toujours */}
+
+        {/* ── FORMULAIRE DE SAISIE ── */}
+        <motion.div variants={itemVariants}>
+          {/* Bouton toggle */}
+          <motion.button
+            whileTap={{ scale: 0.98 }}
+            onClick={() => { setShowForm(v => !v); setErreur(''); }}
+            className="w-full flex items-center justify-between p-4 rounded-2xl font-semibold text-white"
+            style={{ background: 'linear-gradient(135deg, #00C896, #00E5FF)', boxShadow: '0 4px 20px rgba(0,200,150,0.3)' }}
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center">
+                <Plus size={18} className="text-white" />
+              </div>
+              <span className="text-base">Enregistrer mes mesures</span>
+            </div>
+            {showForm ? <ChevronUp size={20} className="text-white/80" /> : <ChevronDown size={20} className="text-white/80" />}
+          </motion.button>
+
+          {/* Formulaire dépliable */}
+          <AnimatePresence>
+            {showForm && (
+              <motion.form
+                onSubmit={handleSubmit}
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="bg-white rounded-2xl p-5 mt-2 space-y-4" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
+
+                  {/* Date */}
+                  <div>
+                    <label className="block text-xs font-semibold mb-1.5" style={{ color: '#6B7A8D' }}>
+                      Date
+                    </label>
+                    <input
+                      type="date"
+                      value={formDate}
+                      max={TODAY}
+                      onChange={e => setFormDate(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl text-sm border focus:outline-none focus:ring-2 transition-all"
+                      style={{ borderColor: '#E5E7EB', color: '#1A2B4A' }}
+                    />
+                  </div>
+
+                  {/* Poids */}
+                  <div>
+                    <label className="block text-xs font-semibold mb-1.5" style={{ color: '#6B7A8D' }}>
+                      Poids (kg) <span style={{ color: '#00C896' }}>*</span>
+                    </label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      min="20"
+                      max="300"
+                      placeholder="Ex : 74.5"
+                      value={formPoids}
+                      onChange={e => setFormPoids(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl text-sm border focus:outline-none transition-all"
+                      style={{ borderColor: formPoids ? '#00C896' : '#E5E7EB', color: '#1A2B4A' }}
+                    />
+                  </div>
+
+                  {/* Mesures optionnelles — 2 colonnes */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-semibold mb-1.5" style={{ color: '#6B7A8D' }}>
+                        Tour de taille (cm)
+                      </label>
+                      <input
+                        type="number"
+                        step="0.5"
+                        min="30"
+                        max="200"
+                        placeholder="Ex : 82"
+                        value={formTaille}
+                        onChange={e => setFormTaille(e.target.value)}
+                        className="w-full px-3 py-3 rounded-xl text-sm border focus:outline-none transition-all"
+                        style={{ borderColor: formTaille ? '#00C896' : '#E5E7EB', color: '#1A2B4A' }}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold mb-1.5" style={{ color: '#6B7A8D' }}>
+                        Tour de hanches (cm)
+                      </label>
+                      <input
+                        type="number"
+                        step="0.5"
+                        min="30"
+                        max="200"
+                        placeholder="Ex : 96"
+                        value={formHanches}
+                        onChange={e => setFormHanches(e.target.value)}
+                        className="w-full px-3 py-3 rounded-xl text-sm border focus:outline-none transition-all"
+                        style={{ borderColor: formHanches ? '#00C896' : '#E5E7EB', color: '#1A2B4A' }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Masse grasse */}
+                  <div>
+                    <label className="block text-xs font-semibold mb-1.5" style={{ color: '#6B7A8D' }}>
+                      Masse grasse (%)
+                    </label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      min="1"
+                      max="60"
+                      placeholder="Ex : 18.5"
+                      value={formMasseGrasse}
+                      onChange={e => setFormMasseGrasse(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl text-sm border focus:outline-none transition-all"
+                      style={{ borderColor: formMasseGrasse ? '#00C896' : '#E5E7EB', color: '#1A2B4A' }}
+                    />
+                  </div>
+
+                  {/* Note / Ressenti */}
+                  <div>
+                    <label className="block text-xs font-semibold mb-1.5" style={{ color: '#6B7A8D' }}>
+                      Note / Ressenti (optionnel)
+                    </label>
+                    <textarea
+                      rows={2}
+                      placeholder="Comment tu te sens aujourd'hui ?"
+                      value={formNote}
+                      onChange={e => setFormNote(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl text-sm border focus:outline-none transition-all resize-none"
+                      style={{ borderColor: formNote ? '#00C896' : '#E5E7EB', color: '#1A2B4A' }}
+                    />
+                  </div>
+
+                  {/* Erreur */}
+                  <AnimatePresence>
+                    {erreur && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm"
+                        style={{ background: '#FEF2F2', color: '#EF4444' }}
+                      >
+                        <AlertCircle size={16} />
+                        {erreur}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Bouton submit */}
+                  <motion.button
+                    type="submit"
+                    disabled={submitting || success}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full py-3.5 rounded-xl font-semibold text-sm text-white transition-all"
+                    style={{
+                      background: success
+                        ? 'linear-gradient(135deg, #00C896, #00a87e)'
+                        : 'linear-gradient(135deg, #00C896, #00E5FF)',
+                      opacity: submitting ? 0.7 : 1,
+                    }}
+                  >
+                    {success ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <Check size={18} /> Enregistré !
+                      </span>
+                    ) : submitting ? (
+                      'Enregistrement...'
+                    ) : (
+                      'Enregistrer'
+                    )}
+                  </motion.button>
+                </div>
+              </motion.form>
+            )}
+          </AnimatePresence>
+        </motion.div>
+
+        {/* ── STATS SÉANCES ── */}
         <motion.div variants={itemVariants} className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[
-            { icon: <Flame size={20} style={{ color: '#FF8C42' }} />, iconBg: 'rgba(255,140,66,0.1)', value: streak, label: 'Jours consécutifs 🔥' },
-            { icon: <Trophy size={20} style={{ color: '#00C896' }} />, iconBg: 'rgba(0,200,150,0.1)', value: seancesCeMois, label: 'Séances ce mois' },
-            { icon: <Target size={20} style={{ color: '#FF8C42' }} />, iconBg: 'rgba(255,140,66,0.1)', value: seancesTotal, label: 'Séances totales' },
-            { icon: <Star size={20} style={{ color: '#00C896' }} />, iconBg: 'rgba(0,200,150,0.1)', value: `${regularite}%`, label: 'Régularité' },
+            { icon: <Flame size={20} style={{ color: '#FF8C42' }} />, iconBg: 'rgba(255,140,66,0.1)', value: streak,          label: 'Jours consécutifs 🔥' },
+            { icon: <Trophy size={20} style={{ color: '#00C896' }} />, iconBg: 'rgba(0,200,150,0.1)',  value: seancesCeMois,   label: 'Séances ce mois' },
+            { icon: <Target size={20} style={{ color: '#FF8C42' }} />, iconBg: 'rgba(255,140,66,0.1)', value: seancesTotal,    label: 'Séances totales' },
+            { icon: <Star   size={20} style={{ color: '#00C896' }} />, iconBg: 'rgba(0,200,150,0.1)',  value: `${regularite}%`, label: 'Régularité' },
           ].map((stat, i) => (
             <div key={i} className="bg-white rounded-2xl p-4 md:p-5 md:hover:shadow-lg transition-shadow"
               style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
@@ -126,9 +423,7 @@ export default function ClientProgresMobile({ client }: ClientProgresMobileProps
           ))}
         </motion.div>
 
-        {/* ── LAYOUT 2 colonnes sur lg : graphique pleine largeur, puis badges/stats côte à côte ── */}
-
-        {/* Graphique — pleine largeur */}
+        {/* ── GRAPHIQUE POIDS ── */}
         <motion.div variants={itemVariants} className="bg-white rounded-3xl p-4 md:p-6"
           style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
           <div className="flex items-center justify-between mb-4">
@@ -144,7 +439,7 @@ export default function ClientProgresMobile({ client }: ClientProgresMobileProps
                 <AreaChart data={poidsData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="gradPoids" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#00C896" stopOpacity={0.3} />
+                      <stop offset="5%"  stopColor="#00C896" stopOpacity={0.3} />
                       <stop offset="95%" stopColor="#00C896" stopOpacity={0} />
                     </linearGradient>
                   </defs>
@@ -168,7 +463,7 @@ export default function ClientProgresMobile({ client }: ClientProgresMobileProps
                 <AreaChart data={seancesParSemaine} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="gradSeances" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#FF8C42" stopOpacity={0.3} />
+                      <stop offset="5%"  stopColor="#FF8C42" stopOpacity={0.3} />
                       <stop offset="95%" stopColor="#FF8C42" stopOpacity={0} />
                     </linearGradient>
                   </defs>
@@ -189,12 +484,116 @@ export default function ClientProgresMobile({ client }: ClientProgresMobileProps
           ) : (
             <div className="h-48 flex flex-col items-center justify-center gap-2" style={{ color: '#6B7A8D' }}>
               <TrendingUp size={36} style={{ color: '#CBD5E1' }} />
-              <p className="text-sm text-center">Les données apparaîtront après quelques séances</p>
+              <p className="text-sm text-center">
+                {metriques.length === 0
+                  ? 'Enregistre ta première mesure pour voir le graphique'
+                  : 'Les données apparaîtront après quelques séances'}
+              </p>
             </div>
           )}
         </motion.div>
 
-        {/* Régularité + Badges — 2 colonnes sur lg */}
+        {/* ── HISTORIQUE DES MESURES ── */}
+        <motion.div variants={itemVariants} className="bg-white rounded-3xl overflow-hidden"
+          style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
+          <div className="flex items-center justify-between px-5 pt-5 pb-3">
+            <h3 className="font-bold text-base" style={{ color: '#1A2B4A' }}>Historique</h3>
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(0,200,150,0.1)', color: '#00A87E' }}>
+              {metriques.length} entrée{metriques.length > 1 ? 's' : ''}
+            </span>
+          </div>
+
+          {metriques.length === 0 ? (
+            <div className="px-5 pb-6 text-center">
+              <p className="text-3xl mb-2">📊</p>
+              <p className="font-semibold text-sm" style={{ color: '#1A2B4A' }}>Commence à suivre ta progression !</p>
+              <p className="text-xs mt-1" style={{ color: '#6B7A8D' }}>Appuie sur "Enregistrer mes mesures" ci-dessus.</p>
+            </div>
+          ) : (
+            <div className="divide-y divide-gray-50">
+              {metriques.map((m, idx) => {
+                const prev = metriques[idx + 1]; // plus ancienne (liste DESC)
+                const diff = prev?.poids != null && m.poids != null
+                  ? (m.poids - prev.poids)
+                  : null;
+
+                return (
+                  <div key={m.id} className="px-5 py-3.5 flex items-center gap-3">
+                    {/* Date */}
+                    <div className="flex-shrink-0 w-20">
+                      <p className="text-xs font-semibold" style={{ color: '#1A2B4A' }}>
+                        {formatDate(m.date).split(' ').slice(0, 2).join(' ')}
+                      </p>
+                      <p className="text-[10px]" style={{ color: '#9CA3AF' }}>
+                        {formatDate(m.date).split(' ')[2]}
+                      </p>
+                    </div>
+
+                    {/* Poids */}
+                    <div className="flex-1">
+                      {m.poids != null && (
+                        <div className="flex items-baseline gap-1.5">
+                          <span className="text-xl font-bold" style={{ color: '#1A2B4A' }}>
+                            {m.poids}
+                          </span>
+                          <span className="text-xs" style={{ color: '#6B7A8D' }}>kg</span>
+
+                          {/* Variation */}
+                          {diff !== null && (
+                            <span
+                              className="text-xs font-semibold ml-1 px-1.5 py-0.5 rounded-lg"
+                              style={{
+                                color: diff < 0 ? '#00A87E' : diff > 0 ? '#EF4444' : '#6B7A8D',
+                                background: diff < 0 ? 'rgba(0,200,150,0.1)' : diff > 0 ? 'rgba(239,68,68,0.1)' : 'rgba(107,122,141,0.1)',
+                              }}
+                            >
+                              {diff > 0 ? '+' : ''}{diff.toFixed(1)} kg
+                            </span>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Mesures secondaires */}
+                      <div className="flex flex-wrap gap-2 mt-0.5">
+                        {m.tour_de_taille != null && (
+                          <span className="text-[10px]" style={{ color: '#9CA3AF' }}>
+                            Taille : {m.tour_de_taille} cm
+                          </span>
+                        )}
+                        {m.tour_de_hanches != null && (
+                          <span className="text-[10px]" style={{ color: '#9CA3AF' }}>
+                            Hanches : {m.tour_de_hanches} cm
+                          </span>
+                        )}
+                        {m.masse_grasse != null && (
+                          <span className="text-[10px]" style={{ color: '#9CA3AF' }}>
+                            MG : {m.masse_grasse} %
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Note */}
+                      {m.note && (
+                        <p className="text-xs mt-1 italic" style={{ color: '#9CA3AF' }}>
+                          "{m.note}"
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Indicateur séance la plus récente */}
+                    {idx === 0 && (
+                      <span className="flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(0,200,150,0.1)', color: '#00A87E' }}>
+                        Dernier
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </motion.div>
+
+        {/* ── RÉGULARITÉ + BADGES ── */}
         <motion.div variants={itemVariants} className="lg:grid lg:grid-cols-2 lg:gap-5 space-y-5 lg:space-y-0">
 
           {/* Régularité */}
@@ -228,7 +627,6 @@ export default function ClientProgresMobile({ client }: ClientProgresMobileProps
                 {badgesConfig.filter(b => b.obtenu).length}/{badgesConfig.length}
               </span>
             </div>
-            {/* Scroll horizontal (mobile), grille 3 col (lg) */}
             <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 md:-mx-8 md:px-8 scrollbar-hide lg:grid lg:grid-cols-3 lg:overflow-visible lg:mx-0 lg:px-0">
               {badgesConfig.map((badge, idx) => {
                 const Icon = badge.icon;
@@ -276,7 +674,7 @@ export default function ClientProgresMobile({ client }: ClientProgresMobileProps
           </div>
         </motion.div>
 
-        {/* Photos de suivi */}
+        {/* ── PHOTOS DE SUIVI ── */}
         <motion.div variants={itemVariants}>
           <motion.div
             whileTap={{ scale: 0.98 }}

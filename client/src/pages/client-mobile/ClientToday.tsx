@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { supabase } from '../../lib/supabase';
+import { supabaseClient as supabase } from '../../lib/supabase';
 import { useClientData, calcStreak } from '../../hooks/useClientData';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -105,7 +105,7 @@ export default function ClientToday({ client }: ClientTodayProps) {
     try {
       const today = new Date().toISOString().split('T')[0];
       const { data } = await supabase
-        .from('seances')
+        .from('seances_coach')
         .select('*, coach:coachs(prenom, nom)')
         .eq('client_id', client.id)
         .eq('date', today)

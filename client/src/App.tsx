@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import type { User } from '@supabase/supabase-js';
-import { supabase } from './lib/supabase';
+import { supabase, supabaseClient } from './lib/supabase';
 import LandingPage from './pages/LandingPage';
+import LegalPage from './pages/LegalPage';
 import Auth from './pages/Auth';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -21,10 +22,12 @@ function App() {
   const [user, setUser] = useState<User | null>(null);
   const [userType, setUserType] = useState<'coach' | 'client' | null>(null);
   const [loading, setLoading] = useState(true);
+  // Session client mobile isolée (storageKey distinct)
+  const [clientUser, setClientUser] = useState<User | null>(null);
+  const [clientLoading, setClientLoading] = useState(true);
 
   useEffect(() => {
-    // onAuthStateChange fire immédiatement avec INITIAL_SESSION en Supabase v2
-    // On évite ainsi le double appel checkUserType
+    // Listener session coach (/app/*)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       const currentUser = session?.user ?? null;
       setUser(currentUser);
@@ -36,7 +39,16 @@ function App() {
       }
     });
 
-    return () => subscription.unsubscribe();
+    // Listener session client mobile (/client/*)
+    const { data: { subscription: clientSubscription } } = supabaseClient.auth.onAuthStateChange((_event, session) => {
+      setClientUser(session?.user ?? null);
+      setClientLoading(false);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+      clientSubscription.unsubscribe();
+    };
   }, []);
 
   async function checkUserType(user: User) {
@@ -70,7 +82,7 @@ function App() {
     }
   }
 
-  if (loading) {
+  if (loading || clientLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
@@ -86,6 +98,10 @@ function App() {
       <Route path="/register" element={<Auth initialMode="register" />} />
       <Route path="/forgot-password" element={<ForgotPasswordWrapper />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/cgu" element={<LegalPage type="cgu" />} />
+      <Route path="/confidentialite" element={<LegalPage type="confidentialite" />} />
+      <Route path="/mentions-legales" element={<LegalPage type="mentions-legales" />} />
+      <Route path="/cookies" element={<LegalPage type="cookies" />} />
 
       {/* Application protégée — guard inline pour éviter le remontage */}
       <Route
@@ -99,26 +115,24 @@ function App() {
         }
       />
 
-      {/* Pages client publiques — redirige si déjà connecté en tant que client */}
+      {/* Pages client publiques — redirige si déjà connecté (session client isolée) */}
       <Route
         path="/client/login"
         element={
-          user && userType === 'client'
+          clientUser
             ? <Navigate to="/client" replace />
             : <ClientLogin />
         }
       />
       <Route path="/client/setup" element={<ClientSetup />} />
 
-      {/* Interface client mobile-first PWA */}
+      {/* Interface client mobile-first PWA — session isolée via supabaseClient */}
       <Route
         path="/client/*"
         element={
-          !user
+          !clientUser
             ? <Navigate to="/client/login" replace />
-            : userType === 'client'
-              ? <ClientApp />
-              : <Navigate to="/app" replace />
+            : <ClientApp />
         }
       />
 

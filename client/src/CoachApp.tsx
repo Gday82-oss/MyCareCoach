@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Routes, Route, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -24,6 +24,8 @@ import Logo from './components/Logo';
 import { useTheme } from './contexts/ThemeContext';
 import { supabase } from './lib/supabase';
 import ChatbotIA from './components/coach/ChatbotIA';
+import InstallPWA from './components/coach/InstallPWA';
+import { useCoachNotifications } from './hooks/useCoachNotifications';
 import Dashboard from './pages/Dashboard';
 import Clients from './pages/Clients';
 import Seances from './pages/Seances';
@@ -42,11 +44,12 @@ const navItems = [
   { path: '/app/metriques', icon: Activity, label: 'Métriques' },
   { path: '/app/attestations', icon: FileText, label: 'Attestations' },
   { path: '/app/facturation', icon: Receipt, label: 'Facturation' },
-  { path: '/app/emails', icon: Mail, label: 'Emails' },
+  { path: '/app/emails', icon: Mail, label: 'Rappels Email' },
   { path: '/app/settings', icon: Settings, label: 'Paramètres' },
 ];
 
 interface CoachInfo {
+  id: string;
   prenom: string;
   nom: string;
   email: string;
@@ -57,6 +60,33 @@ export default function CoachApp() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [chatbotOpen, setChatbotOpen] = useState(false);
   const [coach, setCoach] = useState<CoachInfo | null>(null);
+
+  // Swipe tactile pour ouvrir/fermer la sidebar mobile
+  const touchStartX = useRef<number>(0);
+  const touchStartY = useRef<number>(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    const dy = Math.abs(e.changedTouches[0].clientY - touchStartY.current);
+    // Ignorer si mouvement vertical dominant (scroll)
+    if (dy > Math.abs(dx)) return;
+    // Swipe droite depuis le bord gauche (< 30px) → ouvre
+    if (dx > 50 && touchStartX.current < 30 && !mobileMenuOpen) {
+      setMobileMenuOpen(true);
+    }
+    // Swipe gauche sur la sidebar ouverte → ferme
+    if (dx < -50 && mobileMenuOpen) {
+      setMobileMenuOpen(false);
+    }
+  };
+
+  // Notifications push coach (séances à venir, paiements reçus)
+  useCoachNotifications(coach?.id ?? null);
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
@@ -67,7 +97,7 @@ export default function CoachApp() {
 
       const { data } = await supabase
         .from('coachs')
-        .select('prenom, nom, photo_url')
+        .select('prenom, nom')
         .eq('id', user.id)
         .maybeSingle();
 
@@ -81,11 +111,14 @@ export default function CoachApp() {
         prenom = user.email.split('@')[0];
       }
 
+      const extra = JSON.parse(localStorage.getItem(`coach_extra_${user.id}`) || '{}');
+
       setCoach({
+        id: user.id,
         prenom,
         nom,
         email: user.email || '',
-        photo_url: data?.photo_url ?? null,
+        photo_url: extra.photo_url ?? null,
       });
     });
   }, []);
@@ -182,7 +215,12 @@ export default function CoachApp() {
   );
 
   return (
-    <div id="coach-app" className={`flex h-screen bg-gray-50 dark:bg-[#0F1923] transition-colors duration-300 ${theme === 'dark' ? 'dark' : ''}`}>
+    <div
+      id="coach-app"
+      className={`flex h-screen bg-gray-50 dark:bg-[#0F1923] transition-colors duration-300 ${theme === 'dark' ? 'dark' : ''}`}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
 
       {/* ── MOBILE : Overlay + Drawer (< 768px) ──────────── */}
       <AnimatePresence>
@@ -349,6 +387,9 @@ export default function CoachApp() {
         <Bot size={20} />
         Assistant IA
       </motion.button>
+
+      {/* Bannière d'installation PWA (mobile uniquement, si non installé) */}
+      <InstallPWA />
     </div>
   );
 }

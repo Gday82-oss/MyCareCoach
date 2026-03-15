@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabaseClient as supabase } from '../lib/supabase';
 
 export interface SeanceClient {
   id: string;
@@ -84,7 +84,7 @@ export function useClientData(clientId: string): UseClientDataReturn {
 
   async function fetchSeances() {
     const { data, error } = await supabase
-      .from('seances')
+      .from('seances_coach')
       .select('*, coach:coachs(prenom, nom)')
       .eq('client_id', clientId)
       .order('date', { ascending: false });
@@ -92,22 +92,21 @@ export function useClientData(clientId: string): UseClientDataReturn {
   }
 
   async function fetchProgramme() {
-    // Récupère le programme actif le plus récent pour ce client
-    const { data, error } = await supabase
-      .from('programmes')
-      .select('*, exercices(*)')
-      .eq('client_id', clientId)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle();
+    // Récupère le token de session pour appeler le backend (la RLS Supabase
+    // bloque les clients sur la table programmes — seul le backend admin peut lire)
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) return;
 
-    if (!error && data) {
-      setProgramme({
-        ...data,
-        exercices: (data.exercices || []).sort(
-          (a: ExerciceClient, b: ExerciceClient) => (a.ordre ?? 0) - (b.ordre ?? 0)
-        ),
-      });
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const response = await fetch(`${apiUrl}/client/programme`, {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    });
+
+    if (!response.ok) return;
+
+    const json = await response.json();
+    if (json.programme) {
+      setProgramme(json.programme);
     }
   }
 

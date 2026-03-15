@@ -182,7 +182,7 @@ export default function EmailReminders() {
     <div className="p-4 md:p-8">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6 md:mb-8">
         <div>
-          <h1 className="text-xl md:text-3xl font-bold text-gray-800 dark:text-[#E8EDF5]">Email Reminders</h1>
+          <h1 className="text-xl md:text-3xl font-bold text-gray-800 dark:text-[#E8EDF5]">Rappels Email</h1>
           <p className="text-gray-600 dark:text-[#A8B4C4] mt-1">Automatisation des rappels clients</p>
         </div>
         <div className="flex gap-2 md:gap-3">

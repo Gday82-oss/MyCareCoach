@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { supabase, ensureCoachProfile } from '../lib/supabase';
-import { Plus, FileText, Calendar, Clock, ChevronRight, X } from 'lucide-react';
+import { Plus, FileText, Calendar, Clock, ChevronRight, X, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
 
 interface Programme {
   id: string;
@@ -24,6 +25,18 @@ interface Client {
   nom: string;
 }
 
+// Retire les balises markdown pour l'aperçu texte brut
+function stripMarkdown(text: string, maxLen = 100): string {
+  const stripped = text
+    .replace(/#{1,6}\s*/g, '')
+    .replace(/\*\*/g, '')
+    .replace(/\*/g, '')
+    .replace(/`/g, '')
+    .replace(/\n+/g, ' ')
+    .trim();
+  return stripped.length > maxLen ? stripped.slice(0, maxLen) + '…' : stripped;
+}
+
 export default function Programmes() {
   const [programmes, setProgrammes] = useState<Programme[]>([]);
   const [clients, setClients] = useState<Client[]>([]);
@@ -32,6 +45,7 @@ export default function Programmes() {
   const [showViewModal, setShowViewModal] = useState(false);
   const [selectedProgramme, setSelectedProgramme] = useState<Programme | null>(null);
   const [selectedClient] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -63,6 +77,29 @@ export default function Programmes() {
     } finally {
       setLoading(false);
     }
+  }
+
+  async function supprimerProgramme(id: string) {
+    const { error } = await supabase.from('programmes').delete().eq('id', id);
+    if (error) {
+      alert(`Erreur : ${error.message}`);
+      return;
+    }
+    setProgrammes(prev => prev.filter(p => p.id !== id));
+    setConfirmDeleteId(null);
+  }
+
+  async function activerProgramme(e: React.MouseEvent, progId: string) {
+    e.stopPropagation();
+    const { error } = await supabase
+      .from('programmes')
+      .update({ statut: 'actif' })
+      .eq('id', progId);
+    if (error) {
+      alert(`Erreur : ${error.message}`);
+      return;
+    }
+    setProgrammes(prev => prev.map(p => p.id === progId ? { ...p, statut: 'actif' } : p));
   }
 
   const getStatutColor = (statut: string) => {
@@ -116,9 +153,33 @@ export default function Programmes() {
                     <p className="text-sm text-gray-500 dark:text-[#8896A8]">Pour: {prog.client.prenom} {prog.client.nom}</p>
                   )}
                 </div>
-                <span className={`text-xs px-3 py-1 rounded-full ${getStatutColor(prog.statut)}`}>
-                  {prog.statut}
-                </span>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  {prog.statut === 'brouillon' && (
+                    <button
+                      onClick={(e) => activerProgramme(e, prog.id)}
+                      className="text-xs px-3 py-1 rounded-full font-medium text-white"
+                      style={{ backgroundColor: '#00C896' }}
+                    >
+                      Activer
+                    </button>
+                  )}
+                  {prog.statut === 'actif' && (
+                    <span className="text-xs px-3 py-1 rounded-full bg-green-100 text-green-700 font-medium">Actif</span>
+                  )}
+                  {prog.statut === 'termine' && (
+                    <span className="text-xs px-3 py-1 rounded-full bg-gray-100 dark:bg-[#243044] text-gray-500 dark:text-[#D4DAE6]">Terminé</span>
+                  )}
+                  {prog.statut === 'archive' && (
+                    <span className={`text-xs px-3 py-1 rounded-full ${getStatutColor(prog.statut)}`}>{prog.statut}</span>
+                  )}
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(prog.id); }}
+                    className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+                    title="Supprimer"
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </div>
               </div>
 
               <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-[#A8B4C4] mb-4">
@@ -134,7 +195,7 @@ export default function Programmes() {
                 )}
               </div>
 
-              <p className="text-gray-600 dark:text-[#A8B4C4] line-clamp-3 mb-4">{prog.contenu}</p>
+              <p className="text-gray-600 dark:text-[#A8B4C4] text-sm mb-4">{stripMarkdown(prog.contenu)}</p>
 
               <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-[#2E3D55]">
                 <span className="text-sm text-emerald-600 font-medium">Voir le détail</span>
@@ -157,30 +218,36 @@ export default function Programmes() {
               const form = e.target as HTMLFormElement;
               const formData = new FormData(form);
               const { data: { user } } = await supabase.auth.getUser();
-              
+
               if (!user) {
                 alert('Vous devez être connecté');
                 return;
               }
-              
-              // S'assure que le profil coach existe
+
               await ensureCoachProfile(user);
-              
+
               const dateDebut = formData.get('date_debut') as string;
               const duree = parseInt(formData.get('duree_semaines') as string);
               const dateFin = dateDebut ? new Date(new Date(dateDebut).getTime() + duree * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] : null;
-              
-              await supabase.from('programmes').insert([{
+              const clientId = formData.get('client_id') as string;
+
+              const { error } = await supabase.from('programmes').insert([{
                 coach_id: user.id,
-                client_id: formData.get('client_id'),
+                client_id: clientId || null,
                 titre: formData.get('titre'),
                 contenu: formData.get('contenu'),
                 duree_semaines: duree,
-                date_debut: dateDebut,
+                date_debut: dateDebut || null,
                 date_fin: dateFin,
                 statut: 'brouillon'
               }]);
-              
+
+              if (error) {
+                console.error('Erreur insert programme:', error);
+                alert(`Erreur lors de la création : ${error.message}`);
+                return;
+              }
+
               setShowAddModal(false);
               fetchData();
             }}>
@@ -226,6 +293,37 @@ export default function Programmes() {
         </div>
       )}
 
+      {/* Confirmation suppression */}
+      {confirmDeleteId && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white dark:bg-[#1A2535] rounded-2xl p-6 w-full max-w-sm shadow-xl"
+          >
+            <div className="w-12 h-12 bg-red-100 dark:bg-red-950/40 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Trash2 size={22} className="text-red-500" />
+            </div>
+            <h3 className="text-lg font-bold text-center text-gray-800 dark:text-[#E8EDF5] mb-2">Supprimer ce programme ?</h3>
+            <p className="text-sm text-center text-gray-500 dark:text-[#8896A8] mb-6">Cette action est irréversible.</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setConfirmDeleteId(null)}
+                className="flex-1 py-2.5 border border-gray-300 dark:border-[#2E3D55] text-gray-700 dark:text-[#D4DAE6] rounded-xl hover:bg-gray-50 dark:hover:bg-[#243044] transition-colors"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={() => supprimerProgramme(confirmDeleteId)}
+                className="flex-1 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-colors"
+              >
+                Confirmer
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
       {/* View Modal */}
       {showViewModal && selectedProgramme && (
         <div className="fixed inset-0 bg-black/50 z-50 flex md:items-center md:justify-center">
@@ -242,12 +340,16 @@ export default function Programmes() {
 
             <div className="overflow-y-auto flex-1 p-6 md:p-8">
               <div className="flex gap-4 mb-6">
-                <span className={`px-3 py-1 rounded-full ${getStatutColor(selectedProgramme.statut)}`}>{selectedProgramme.statut}</span>
-                <span className="px-3 py-1 bg-gray-100 dark:bg-[#243044] rounded-full dark:text-[#D4DAE6]">{selectedProgramme.duree_semaines} semaines</span>
+                <span className={`px-3 py-1 rounded-full text-sm ${getStatutColor(selectedProgramme.statut)}`}>{selectedProgramme.statut}</span>
+                <span className="px-3 py-1 bg-gray-100 dark:bg-[#243044] rounded-full text-sm dark:text-[#D4DAE6]">{selectedProgramme.duree_semaines} semaines</span>
               </div>
 
-              <div className="prose max-w-none">
-                <pre className="whitespace-pre-wrap font-sans text-gray-700 dark:text-[#D4DAE6]">{selectedProgramme.contenu}</pre>
+              <div className="prose prose-sm max-w-none dark:prose-invert
+                prose-headings:text-[#1A2B4A] dark:prose-headings:text-[#E8EDF5]
+                prose-p:text-gray-700 dark:prose-p:text-[#D4DAE6]
+                prose-li:text-gray-700 dark:prose-li:text-[#D4DAE6]
+                prose-strong:text-[#1A2B4A] dark:prose-strong:text-[#E8EDF5]">
+                <ReactMarkdown>{selectedProgramme.contenu}</ReactMarkdown>
               </div>
             </div>
 

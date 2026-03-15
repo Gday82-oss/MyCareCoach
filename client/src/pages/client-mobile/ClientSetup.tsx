@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../../lib/supabase';
+import { supabaseClient as supabase } from '../../lib/supabase';
 import { motion } from 'framer-motion';
 import { Heart, Lock, CheckCircle } from 'lucide-react';
 

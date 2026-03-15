@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../../lib/supabase';
+import { supabaseClient as supabase } from '../../lib/supabase';
 import { FileText, ChevronRight, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 

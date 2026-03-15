@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>MyCareCoach — Hors ligne</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #1A2B4A;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      padding: 24px;
+    }
+    .card {
+      text-align: center;
+      max-width: 320px;
+      width: 100%;
+    }
+    .heart {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px;
+    }
+    h1 {
+      color: #ffffff;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    p {
+      color: rgba(255,255,255,0.6);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+    button {
+      background: #00C896;
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 32px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    button:active { opacity: 0.8; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <!-- Logo cœur MyCareCoach -->
+    <svg class="heart" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="80" height="80" rx="20" fill="rgba(255,255,255,0.08)"/>
+      <path
+        d="M40 58s-18-11.5-18-23a10 10 0 0 1 18-6.18A10 10 0 0 1 58 35c0 11.5-18 23-18 23z"
+        fill="#00C896"
+      />
+    </svg>
+
+    <h1>Vous êtes hors ligne</h1>
+    <p>Vos dernières données sont disponibles en cache.<br>Reconnectez-vous pour synchroniser.</p>
+
+    <button onclick="window.location.reload()">Réessayer</button>
+  </div>
+</body>
+</html>

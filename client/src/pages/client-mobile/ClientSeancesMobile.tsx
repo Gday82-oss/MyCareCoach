@@ -13,6 +13,7 @@ interface SeanceDisplay {
   heure: string;
   duree: number;
   type: string;
+  notes?: string;
   statut: 'a_venir' | 'faite' | 'passee';
   lieu?: string;
   coach?: { prenom: string; nom: string };
@@ -67,7 +68,7 @@ export default function ClientSeancesMobile({ client }: ClientSeancesMobileProps
 
   const seances: SeanceDisplay[] = rawSeances.map(s => ({
     id: s.id, date: s.date, heure: s.heure, duree: s.duree ?? 0,
-    type: s.type, statut: getStatutSeance(s), lieu: s.lieu, coach: s.coach,
+    type: s.type, notes: s.notes, statut: getStatutSeance(s), lieu: s.lieu, coach: s.coach,
   }));
 
   const aVenir = seances.filter(s => s.statut === 'a_venir').length;
@@ -229,7 +230,15 @@ export default function ClientSeancesMobile({ client }: ClientSeancesMobileProps
                                   <MapPin size={13} style={{ color: '#FF8C42' }} />{seance.lieu}
                                 </span>
                               )}
+                              {seance.coach && (
+                                <span style={{ color: '#9CA3AF' }}>
+                                  Coach {seance.coach.prenom} {seance.coach.nom}
+                                </span>
+                              )}
                             </div>
+                            {seance.notes && (
+                              <p className="text-xs mt-1.5 italic" style={{ color: '#9CA3AF' }}>{seance.notes}</p>
+                            )}
                           </div>
                         </motion.div>
                       );

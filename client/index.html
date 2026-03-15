@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/icon-192x192.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/icon-192x192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
@@ -17,14 +18,25 @@
     <meta name="application-name" content="MyCareCoach" />
     <meta name="format-detection" content="telephone=no" />
     
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="/manifest.json" />
-    
+    <!-- PWA Manifest — dynamique : coach (/app) vs client (/client) -->
+    <link rel="manifest" href="/manifest.json" id="pwa-manifest" />
+    <script>
+      (function() {
+        if (window.location.pathname.startsWith('/app')) {
+          document.getElementById('pwa-manifest').href = '/manifest-coach.json';
+          // Theme color coach (bleu marine)
+          document.querySelectorAll('meta[name="theme-color"]').forEach(function(m) {
+            m.content = '#1A2B4A';
+          });
+        }
+      })();
+    </script>
+
     <!-- Apple Touch Icons -->
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="apple-touch-icon" sizes="152x152" href="/icon-192x192.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="apple-touch-icon" sizes="167x167" href="/icon-192x192.png" />
+    <link rel="apple-touch-icon" href="/icons/icon-180.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-180.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-192.png" />
 
     <!-- Splash Screens for iOS -->
     <link rel="apple-touch-startup-image" href="/icon-512x512.png" />
@@ -45,7 +57,7 @@
     <meta property="og:description" content="Suivez vos séances, programmes et progrès avec votre coach personnel." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mycarecoach.app" />
-    <meta property="og:image" content="https://mycarecoach.app/icon-512x512.png" />
+    <meta property="og:image" content="https://mycarecoach.app/favicon.svg" />
     <meta property="og:image:width" content="512" />
     <meta property="og:image:height" content="512" />
     

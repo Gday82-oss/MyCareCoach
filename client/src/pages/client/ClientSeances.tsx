@@ -1,7 +1,15 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../../lib/supabase';
-import { Check, Clock } from 'lucide-react';
+import { supabaseClient as supabase } from '../../lib/supabase';
+import { Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
+
+const TYPE_COLORS: Record<string, { bg: string; color: string }> = {
+  cardio:       { bg: 'rgba(255,140,66,0.12)',  color: '#FF8C42' },
+  renforcement: { bg: 'rgba(26,43,74,0.10)',    color: '#1A2B4A' },
+  mobilite:     { bg: 'rgba(0,200,150,0.12)',   color: '#00C896' },
+  recuperation: { bg: 'rgba(0,229,255,0.12)',   color: '#00B4CC' },
+  mixte:        { bg: 'rgba(124,58,237,0.10)',  color: '#7C3AED' },
+};
 
 interface ClientSeancesProps {
   client: {
@@ -36,10 +44,10 @@ export default function ClientSeances({ client }: ClientSeancesProps) {
   async function fetchSeances() {
     try {
       const { data } = await supabase
-        .from('seances')
+        .from('seances_coach')
         .select('*, coach:coachs(prenom, nom)')
         .eq('client_id', client.id)
-        .order('date', { ascending: false });
+        .order('date', { ascending: true });
 
       setSeances(data || []);
     } catch (error) {
@@ -79,29 +87,42 @@ export default function ClientSeances({ client }: ClientSeancesProps) {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: idx * 0.1 }}
-                className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
+                className="bg-white rounded-xl shadow-sm border-l-4 p-5"
+                style={{ borderLeftColor: '#00C896', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 bg-emerald-100 rounded-xl flex flex-col items-center justify-center">
-                    <span className="text-xs text-emerald-600 font-medium">
-                      {new Date(seance.date).toLocaleDateString('fr-FR', { month: 'short' })}
+                <div className="flex items-start gap-4">
+                  <div className="w-14 flex-shrink-0 rounded-xl flex flex-col items-center justify-center py-2 bg-emerald-50">
+                    <span className="text-[11px] font-semibold text-emerald-600 uppercase">
+                      {new Date(seance.date + 'T00:00:00').toLocaleDateString('fr-FR', { month: 'short' })}
                     </span>
-                    <span className="text-xl font-bold text-emerald-600">
-                      {new Date(seance.date).getDate()}
+                    <span className="text-xl font-bold text-emerald-600 leading-none">
+                      {new Date(seance.date + 'T00:00:00').getDate()}
                     </span>
                   </div>
-                  
-                  <div className="flex-1">
-                    <p className="font-semibold text-gray-800">{seance.type}</p>
-                    <div className="flex items-center gap-4 text-sm text-gray-500 mt-1">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <span
+                        className="inline-block px-2.5 py-0.5 rounded-lg text-xs font-bold capitalize"
+                        style={{ backgroundColor: (TYPE_COLORS[seance.type] ?? TYPE_COLORS.mixte).bg, color: (TYPE_COLORS[seance.type] ?? TYPE_COLORS.mixte).color }}
+                      >
+                        {seance.type}
+                      </span>
+                      <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: 'rgba(0,200,150,0.12)', color: '#00C896' }}>
+                        À venir
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500 mt-2">
                       <span className="flex items-center gap-1">
-                        <Clock size={14} />
-                        {seance.heure?.slice(0, 5)} ({seance.duree}min)
+                        <Clock size={13} className="text-orange-400" />
+                        {seance.heure?.slice(0, 5).replace(':', 'h')} · {seance.duree} min
                       </span>
                       {seance.coach && (
-                        <span>Avec: {seance.coach.prenom} {seance.coach.nom}</span>
+                        <span className="text-gray-400">Coach {seance.coach.prenom} {seance.coach.nom}</span>
                       )}
                     </div>
+                    {seance.notes && (
+                      <p className="text-xs text-gray-500 mt-1.5 italic">{seance.notes}</p>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -126,41 +147,41 @@ export default function ClientSeances({ client }: ClientSeancesProps) {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: idx * 0.05 }}
-                className={`rounded-xl shadow-sm border p-6 ${
-                  seance.fait 
-                    ? 'bg-green-50 border-green-200' 
-                    : 'bg-gray-50 border-gray-200'
-                }`}
+                className="bg-white rounded-xl border border-gray-100 p-5"
+                style={{ boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}
               >
-                <div className="flex items-center gap-4">
-                  <div className={`w-14 h-14 rounded-xl flex flex-col items-center justify-center ${
-                    seance.fait ? 'bg-green-200' : 'bg-gray-200'
-                  }`}>
-                    <span className={`text-xs font-medium ${seance.fait ? 'text-green-700' : 'text-gray-600'}`}>
-                      {new Date(seance.date).toLocaleDateString('fr-FR', { month: 'short' })}
+                <div className="flex items-start gap-4">
+                  <div className="w-14 flex-shrink-0 rounded-xl flex flex-col items-center justify-center py-2 bg-gray-100">
+                    <span className="text-[11px] font-semibold text-gray-500 uppercase">
+                      {new Date(seance.date + 'T00:00:00').toLocaleDateString('fr-FR', { month: 'short' })}
                     </span>
-                    <span className={`text-xl font-bold ${seance.fait ? 'text-green-700' : 'text-gray-600'}`}>
-                      {new Date(seance.date).getDate()}
+                    <span className="text-xl font-bold text-gray-500 leading-none">
+                      {new Date(seance.date + 'T00:00:00').getDate()}
                     </span>
                   </div>
-                  
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <p className="font-semibold text-gray-800">{seance.type}</p>
-                      {seance.fait && <Check size={16} className="text-green-600" />}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <span
+                        className="inline-block px-2.5 py-0.5 rounded-lg text-xs font-bold capitalize"
+                        style={{ backgroundColor: (TYPE_COLORS[seance.type] ?? TYPE_COLORS.mixte).bg, color: (TYPE_COLORS[seance.type] ?? TYPE_COLORS.mixte).color }}
+                      >
+                        {seance.type}
+                      </span>
+                      {seance.fait
+                        ? <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-gray-100 text-gray-500">Réalisée</span>
+                        : <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-gray-100 text-gray-400">Manquée</span>
+                      }
                     </div>
-                    <div className="flex items-center gap-4 text-sm text-gray-500 mt-1">
+                    <div className="flex flex-wrap items-center gap-3 text-sm text-gray-400 mt-2">
                       <span className="flex items-center gap-1">
-                        <Clock size={14} />
-                        {seance.heure?.slice(0, 5)}
+                        <Clock size={13} />{seance.heure?.slice(0, 5).replace(':', 'h')} · {seance.duree} min
                       </span>
-                      <span className={seance.fait ? 'text-green-600' : 'text-gray-500'}>
-                        {seance.fait ? 'Réalisée' : 'Non réalisée'}
-                      </span>
+                      {seance.coach && (
+                        <span>Coach {seance.coach.prenom} {seance.coach.nom}</span>
+                      )}
                     </div>
-                    
                     {seance.notes && (
-                      <p className="text-sm text-gray-600 mt-2">{seance.notes}</p>
+                      <p className="text-xs text-gray-400 mt-1.5 italic">{seance.notes}</p>
                     )}
                   </div>
                 </div>

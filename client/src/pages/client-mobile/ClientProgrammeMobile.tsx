@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useClientData } from '../../hooks/useClientData';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Dumbbell, CheckCircle2, Play, Flame, Timer, ChevronDown, ChevronUp } from 'lucide-react';
+import { Dumbbell, CheckCircle2, Play, Timer, ChevronDown, ChevronUp, FileText } from 'lucide-react';
 
 interface ClientProgrammeMobileProps {
   client: { id: string; prenom: string; nom: string };
@@ -18,6 +18,17 @@ interface Exercice {
   expanded: boolean;
 }
 
+function stripMarkdown(text: string): string {
+  return text
+    .replace(/#{1,6}\s+/g, '')
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/\*(.+?)\*/g, '$1')
+    .replace(/^[-*+]\s+/gm, '• ')
+    .replace(/^\d+\.\s+/gm, '')
+    .replace(/`(.+?)`/g, '$1')
+    .trim();
+}
+
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { staggerChildren: 0.07 } },
@@ -27,15 +38,6 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 350, damping: 25 } },
 };
 
-const semaineDemo = [
-  { jour: 'Lun', nom: 'Pectoraux & Dos', duree: 60, exercices: 6, fait: true, actif: false },
-  { jour: 'Mar', nom: 'Repos actif', duree: 30, exercices: 0, fait: true, actif: false },
-  { jour: 'Mer', nom: 'Jambes & Core', duree: 75, exercices: 8, fait: false, actif: true },
-  { jour: 'Jeu', nom: 'Repos', duree: 0, exercices: 0, fait: false, actif: false },
-  { jour: 'Ven', nom: 'Épaules & Bras', duree: 60, exercices: 7, fait: false, actif: false },
-  { jour: 'Sam', nom: 'Cardio', duree: 45, exercices: 0, fait: false, actif: false },
-  { jour: 'Dim', nom: 'Repos', duree: 0, exercices: 0, fait: false, actif: false },
-];
 
 export default function ClientProgrammeMobile({ client }: ClientProgrammeMobileProps) {
   const { programme, loading } = useClientData(client.id);
@@ -87,12 +89,6 @@ export default function ClientProgrammeMobile({ client }: ClientProgrammeMobileP
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
             <div className="flex items-start justify-between gap-4">
               <div>
-                <span
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-3"
-                  style={{ backgroundColor: 'rgba(255,255,255,0.2)', color: 'white' }}
-                >
-                  <Flame size={12} /> {programme?.statut || 'En cours'}
-                </span>
                 <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-white leading-tight">
                   {programme?.nom || 'Mon Programme'}
                 </h1>
@@ -170,9 +166,21 @@ export default function ClientProgrammeMobile({ client }: ClientProgrammeMobileP
                     <p className="text-sm mt-2" style={{ color: '#6B7A8D' }}>Ton coach travaille sur un programme personnalisé</p>
                   </div>
                 ) : exercices.length === 0 ? (
-                  <div className="text-center py-12">
-                    <Dumbbell size={40} style={{ color: '#CBD5E1', margin: '0 auto 12px' }} />
-                    <p style={{ color: '#6B7A8D' }}>Aucun exercice configuré</p>
+                  <div className="bg-white rounded-3xl p-6" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                        style={{ backgroundColor: 'rgba(255,140,66,0.1)' }}>
+                        <FileText size={20} style={{ color: '#FF8C42' }} />
+                      </div>
+                      <p className="font-bold" style={{ color: '#1A2B4A' }}>Contenu du programme</p>
+                    </div>
+                    {programme?.description ? (
+                      <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans" style={{ color: '#374151' }}>
+                        {stripMarkdown(programme.description)}
+                      </pre>
+                    ) : (
+                      <p className="text-sm" style={{ color: '#6B7A8D' }}>Aucun exercice configuré par ton coach.</p>
+                    )}
                   </div>
                 ) : (
                   <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-3 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
@@ -278,45 +286,52 @@ export default function ClientProgrammeMobile({ client }: ClientProgrammeMobileP
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.25 }}
               >
-                <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-3 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
-                  {semaineDemo.map(jour => (
+                {!programme ? (
+                  <div
+                    className="rounded-3xl p-10 text-center"
+                    style={{ background: 'linear-gradient(135deg, rgba(255,140,66,0.06) 0%, rgba(255,179,71,0.06) 100%)', border: '1.5px dashed rgba(255,140,66,0.3)' }}
+                  >
+                    <div className="text-4xl mb-3">📅</div>
+                    <p className="font-bold text-lg" style={{ color: '#1A2B4A' }}>Pas encore de planning</p>
+                    <p className="text-sm mt-2" style={{ color: '#6B7A8D' }}>Ton coach n'a pas encore structuré ta semaine</p>
+                  </div>
+                ) : (
+                  <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-3">
                     <motion.div
-                      key={jour.jour}
                       variants={itemVariants}
-                      whileTap={{ scale: 0.98 }}
-                      className="bg-white rounded-2xl p-4 md:p-5 md:hover:shadow-lg transition-shadow"
-                      style={{
-                        boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
-                        borderLeft: jour.actif ? '4px solid #FF8C42' : jour.fait ? '4px solid #00C896' : '4px solid transparent',
-                        opacity: jour.nom === 'Repos' && !jour.actif ? 0.65 : 1,
-                      }}
+                      className="bg-white rounded-2xl p-5"
+                      style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.06)', borderLeft: '4px solid #00C896' }}
                     >
-                      <div className="flex items-center gap-4">
-                        <div
-                          className="w-12 h-12 rounded-xl flex flex-col items-center justify-center flex-shrink-0"
-                          style={{ backgroundColor: jour.actif ? '#FF8C42' : jour.fait ? '#00C896' : '#F0FAF7' }}
-                        >
-                          <span className="text-xs font-bold" style={{ color: jour.actif || jour.fait ? 'white' : '#6B7A8D' }}>
-                            {jour.jour}
-                          </span>
-                          {jour.fait && !jour.actif && <CheckCircle2 size={12} className="text-white mt-0.5" />}
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                          style={{ backgroundColor: 'rgba(0,200,150,0.1)' }}>
+                          <Dumbbell size={18} style={{ color: '#00C896' }} />
                         </div>
-                        <div className="flex-1">
-                          <p className="font-bold" style={{ color: jour.actif ? '#FF8C42' : '#1A2B4A' }}>{jour.nom}</p>
-                          <p className="text-sm mt-0.5" style={{ color: '#6B7A8D' }}>
-                            {jour.exercices > 0 ? `${jour.exercices} exercices · ${jour.duree} min` : 'Jour de repos'}
+                        <div>
+                          <p className="font-bold" style={{ color: '#1A2B4A' }}>{programme.nom}</p>
+                          <p className="text-sm" style={{ color: '#6B7A8D' }}>
+                            {programme.duree_semaines ? `${programme.duree_semaines} semaines` : 'Programme en cours'}
                           </p>
                         </div>
-                        {jour.actif && (
-                          <span className="px-2.5 py-1 rounded-full text-xs font-bold text-white flex-shrink-0"
-                            style={{ backgroundColor: '#FF8C42' }}>
-                            Aujourd'hui
-                          </span>
-                        )}
                       </div>
+                      {programme.description && (
+                        <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans mt-3 pt-3 border-t"
+                          style={{ color: '#374151', borderColor: '#F0FAF7' }}>
+                          {stripMarkdown(programme.description)}
+                        </pre>
+                      )}
                     </motion.div>
-                  ))}
-                </motion.div>
+                    <motion.div
+                      variants={itemVariants}
+                      className="rounded-2xl p-4 text-center"
+                      style={{ background: 'rgba(255,140,66,0.06)', border: '1px dashed rgba(255,140,66,0.25)' }}
+                    >
+                      <p className="text-sm" style={{ color: '#6B7A8D' }}>
+                        Le planning semaine détaillé sera disponible prochainement
+                      </p>
+                    </motion.div>
+                  </motion.div>
+                )}
               </motion.div>
             )}
           </AnimatePresence>

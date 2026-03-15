@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Routes, Route, NavLink, useLocation } from 'react-router-dom';
-import { supabase } from './lib/supabase';
+import { supabaseClient as supabase } from './lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Home, Calendar, Dumbbell, BarChart3, User } from 'lucide-react';
 
@@ -10,13 +10,15 @@ import ClientProgrammeMobile from './pages/client-mobile/ClientProgrammeMobile';
 import ClientProgresMobile from './pages/client-mobile/ClientProgresMobile';
 import ClientProfile from './pages/client-mobile/ClientProfile';
 
-interface ClientProfile {
+interface ClientData {
   id: string;
   prenom: string;
   nom: string;
   email: string;
   coach_id: string;
-  objectif?: string;
+  telephone?: string;
+  date_naissance?: string;
+  objectifs?: string;
 }
 
 const pageVariants = {
@@ -38,7 +40,7 @@ const navItems = [
 ];
 
 export default function ClientApp() {
-  const [client, setClient] = useState<ClientProfile | null>(null);
+  const [client, setClient] = useState<ClientData | null>(null);
   const [loading, setLoading] = useState(true);
   const location = useLocation();
 
@@ -46,11 +48,18 @@ export default function ClientApp() {
 
   async function fetchClientData() {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user?.email) { setLoading(false); return; }
-      const { data } = await supabase
-        .from('clients').select('*').eq('email', user.email).maybeSingle();
-      if (data) setClient(data);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) { setLoading(false); return; }
+
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${apiUrl}/client/profil`, {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+
+      if (!response.ok) { setLoading(false); return; }
+
+      const json = await response.json();
+      if (json.client) setClient(json.client);
     } catch (e) {
       console.error(e);
     } finally {

@@ -90,7 +90,7 @@ export default function Auth({ initialMode = 'login' }: AuthProps) {
         navigate('/app');
       } else {
         // Inscription
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        const { error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -99,23 +99,14 @@ export default function Auth({ initialMode = 'login' }: AuthProps) {
               nom,
               prenom,
             },
+            emailRedirectTo: 'https://mycarecoach.app/login',
           },
         });
         if (signUpError) throw signUpError;
 
-        // Créer la ligne du coach dans la table "coachs"
-        if (signUpData.user) {
-          await supabase.from('coachs').insert({
-            id: signUpData.user.id,
-            email,
-            prenom,
-            nom,
-          });
-        }
+        // Ne pas insérer dans coachs ici — l'utilisateur n'est pas encore confirmé.
+        // La création du profil se fait via un trigger Supabase après confirmation email.
 
-        setError('');
-        setIsLogin(true);
-        // Afficher un message de succès via le champ error (couleur verte gérée ci-dessous)
         setError('SUCCESS');
       }
     } catch (err: any) {
@@ -143,8 +134,11 @@ export default function Auth({ initialMode = 'login' }: AuthProps) {
         </div>
 
         {error && error === 'SUCCESS' && (
-          <div className="bg-green-50 text-green-700 p-3 rounded-lg mb-4 text-sm">
-            Compte créé ! Vérifiez votre email pour confirmer votre inscription, puis connectez-vous.
+          <div className="bg-green-50 border border-green-200 text-green-700 p-4 rounded-lg mb-4 text-sm leading-relaxed">
+            <p className="font-semibold mb-1">Compte créé avec succès ! 🎉</p>
+            <p>Un email de confirmation vous a été envoyé à <strong>{email}</strong>.</p>
+            <p className="mt-1">Cliquez sur le lien dans l'email pour activer votre compte.</p>
+            <p className="mt-1 text-green-600">📧 Pensez à vérifier vos spams si vous ne le recevez pas dans 2 minutes.</p>
           </div>
         )}
         {error && error !== 'SUCCESS' && (

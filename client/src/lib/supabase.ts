@@ -9,7 +9,25 @@ if (!supabaseUrl || !supabaseAnonKey) {
   );
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Instance coach — session isolée sur /app/*
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    storageKey: 'mycarecoach-coach-session',
+    storage: localStorage,
+    autoRefreshToken: true,
+    persistSession: true,
+  },
+});
+
+// Instance client mobile — session isolée sur /client/*
+export const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    storageKey: 'mycarecoach-client-session',
+    storage: localStorage,
+    autoRefreshToken: true,
+    persistSession: true,
+  },
+});
 
 // Utilitaire : s'assure que le profil coach existe (fix pour trigger qui peut échouer)
 export async function ensureCoachProfile(user: any): Promise<boolean> {

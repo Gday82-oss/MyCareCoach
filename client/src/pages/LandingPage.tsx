@@ -2,26 +2,17 @@ import { useState, useEffect, useRef, type RefObject } from 'react';
 import { Link } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Calendar, Dumbbell,
-  Activity, FileText, Star, Check, ArrowRight,
-  Menu, X, ChevronRight,
+  Activity, FileText, Brain, Star, Check, ArrowRight,
+  X, ChevronRight,
 } from 'lucide-react';
-import Logo from '../components/Logo';
 import DemoModal from '../components/DemoModal';
+import InstallPWABanner from '../components/InstallPWABanner';
+import LandingHeader from '../components/LandingHeader';
+import LandingFooter from '../components/LandingFooter';
 
 // ─────────────────────────────────────────────────────────
 // Hooks utilitaires
 // ─────────────────────────────────────────────────────────
-
-/** Détecte si l'utilisateur a scrollé au-delà de `threshold` pixels. */
-function useScrolled(threshold = 10): boolean {
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > threshold);
-    window.addEventListener('scroll', handler, { passive: true });
-    return () => window.removeEventListener('scroll', handler);
-  }, [threshold]);
-  return scrolled;
-}
 
 /** Retourne [ref, isVisible] — isVisible passe à true dès que l'élément entre dans le viewport. */
 function useScrollReveal<T extends Element>(options?: IntersectionObserverInit): [RefObject<T | null>, boolean] {
@@ -51,6 +42,7 @@ const features = [
   { icon: Dumbbell,        title: 'Programmes',        description: "Créez des programmes d'entraînement personnalisés, exportez en PDF, partagez en un clic.",       color: '#F97316', bg: '#FFF7ED' },
   { icon: Activity,        title: 'Métriques',         description: "Suivez les progrès de chaque client : poids, VO₂max, performances et courbes d'évolution.",      color: '#EF4444', bg: '#FEF2F2' },
   { icon: FileText,        title: 'Facturation',       description: 'Factures professionnelles, attestations mutuelle et suivi des paiements en quelques secondes.', color: '#8B5CF6', bg: '#F5F3FF' },
+  { icon: Brain,           title: 'Assistant IA',      description: "Génère des programmes personnalisés en secondes. Recommandations basées sur les données OMS et le profil de chaque client.", color: '#8B5CF6', bg: '#F5F3FF', badge: 'Pro & Business' },
 ];
 
 const testimonials = [
@@ -71,137 +63,101 @@ const testimonials = [
   },
 ];
 
-const plans = [
+type PlanFeature = { label: string; included: boolean; badge?: string; isAI?: boolean };
+type PlanGroup = { title: string; features: PlanFeature[] };
+type Plan = { name: string; price: string; period: string; description: string; groups: PlanGroup[]; cta: string; ctaHref: string; highlighted: boolean };
+
+const plans: Plan[] = [
   {
     name: 'Gratuit', price: '0', period: 'pour toujours',
     description: 'Pour démarrer sans risque.',
-    features: ['3 clients maximum', 'Dashboard & calendrier', 'Programmes de base', 'Support par email'],
-    cta: 'Commencer gratuitement', highlighted: false,
+    groups: [
+      {
+        title: 'Gestion',
+        features: [
+          { label: '3 clients maximum', included: true },
+          { label: 'Dashboard & calendrier', included: true },
+          { label: 'Programmes de base', included: true },
+          { label: 'Support par email', included: true },
+        ],
+      },
+      {
+        title: 'Business',
+        features: [
+          { label: 'Facturation & attestations', included: false },
+          { label: 'Rappels automatiques', included: false },
+          { label: 'Export PDF', included: false },
+        ],
+      },
+      {
+        title: 'IA',
+        features: [
+          { label: 'Non inclus', included: false, isAI: true },
+        ],
+      },
+    ],
+    cta: 'Commencer gratuitement', ctaHref: '/login', highlighted: false,
   },
   {
     name: 'Pro', price: '19', period: 'par mois',
     description: 'Pour les coachs qui veulent scaler.',
-    features: ['Clients illimités', 'Facturation & attestations', 'Métriques avancées', 'Rappels automatiques', 'Export PDF', 'Support prioritaire'],
-    cta: 'Choisir Pro', highlighted: true,
+    groups: [
+      {
+        title: 'Gestion',
+        features: [
+          { label: 'Clients illimités', included: true },
+          { label: 'Dashboard & calendrier', included: true },
+          { label: 'Métriques avancées', included: true },
+        ],
+      },
+      {
+        title: 'Business',
+        features: [
+          { label: 'Facturation & attestations', included: true },
+          { label: 'Rappels automatiques', included: true },
+          { label: 'Export PDF', included: true },
+          { label: 'Support prioritaire', included: true },
+        ],
+      },
+      {
+        title: 'IA',
+        features: [
+          { label: 'Générateur de programmes IA', included: true, badge: '50 req/mois', isAI: true },
+          { label: 'Chatbot IA client', included: false, isAI: true },
+        ],
+      },
+    ],
+    cta: 'Choisir Pro', ctaHref: '/register', highlighted: true,
   },
   {
     name: 'Business', price: '49', period: 'par mois',
     description: 'Pour les structures multi-coachs.',
-    features: ['Tout de Pro inclus', 'Multi-coachs', 'Dashboard direction', 'Intégrations avancées', 'Gestion des permissions', 'Support dédié 24/7'],
-    cta: 'Choisir Business', highlighted: false,
+    groups: [
+      {
+        title: 'Tout de Pro inclus +',
+        features: [
+          { label: 'Multi-coachs', included: true },
+          { label: 'Dashboard direction', included: true },
+          { label: 'Gestion des permissions', included: true },
+          { label: 'Intégrations avancées', included: true },
+          { label: 'Support dédié 24/7', included: true },
+        ],
+      },
+      {
+        title: 'IA',
+        features: [
+          { label: 'Générateur de programmes IA', included: true, badge: 'Illimité', isAI: true },
+          { label: 'Chatbot IA coach + client', included: true, badge: 'Illimité', isAI: true },
+        ],
+      },
+    ],
+    cta: 'Choisir Business', ctaHref: '/register', highlighted: false,
   },
 ];
 
 // ─────────────────────────────────────────────────────────
 // Composants de section
 // ─────────────────────────────────────────────────────────
-
-function scrollToId(id: string) {
-  return (e: React.MouseEvent) => {
-    e.preventDefault();
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-  };
-}
-
-// ── Header ──────────────────────────────────────────────
-
-function Header() {
-  const scrolled = useScrolled();
-  const [open, setOpen] = useState(false);
-
-  return (
-    <header
-      className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100'
-          : 'bg-transparent'
-      }`}
-    >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" aria-label="Accueil">
-          <Logo height={36} />
-        </Link>
-
-        {/* Nav desktop */}
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-[#1A2B4A]">
-          <a href="#fonctionnalites" onClick={scrollToId('fonctionnalites')}
-            className="hover:text-[#00C896] transition-colors">Fonctionnalités</a>
-          <a href="#tarifs" onClick={scrollToId('tarifs')}
-            className="hover:text-[#00C896] transition-colors">Tarifs</a>
-          <a href="#temoignages" onClick={scrollToId('temoignages')}
-            className="hover:text-[#00C896] transition-colors">À propos</a>
-        </nav>
-
-        {/* Actions desktop */}
-        <div className="hidden md:flex items-center gap-2">
-          <Link
-            to="/login"
-            className="rounded-full font-medium cursor-pointer transition-opacity duration-200 hover:opacity-85"
-            style={{ background: 'linear-gradient(135deg, #1A2B4A, #2a4070)', color: 'white', border: 'none', borderRadius: '9999px', padding: '12px 28px', fontSize: '15px', fontWeight: 500 }}
-          >
-            Espace Coach
-          </Link>
-          <Link
-            to="/client/login"
-            className="rounded-full font-medium cursor-pointer transition-opacity duration-200 hover:opacity-85"
-            style={{ background: 'linear-gradient(135deg, #00C896, #00a87e)', color: 'white', border: 'none', borderRadius: '9999px', padding: '12px 28px', fontSize: '15px', fontWeight: 500 }}
-          >
-            Espace Client
-          </Link>
-          <Link
-            to="/register"
-            className="rounded-full font-medium cursor-pointer transition-opacity duration-200 hover:opacity-85"
-            style={{ background: 'linear-gradient(135deg, #00E5FF, #00C896)', color: '#1A2B4A', border: 'none', borderRadius: '9999px', padding: '12px 28px', fontSize: '15px', fontWeight: 500 }}
-          >
-            S'inscrire
-          </Link>
-        </div>
-
-        {/* Hamburger mobile */}
-        <button
-          className="md:hidden p-2 rounded-lg text-[#1A2B4A] hover:bg-gray-100 transition-colors"
-          onClick={() => setOpen(!open)}
-          aria-label={open ? 'Fermer le menu' : 'Ouvrir le menu'}
-        >
-          {open ? <X size={22} /> : <Menu size={22} />}
-        </button>
-      </div>
-
-      {/* Menu mobile */}
-      {open && (
-        <div className="md:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-2">
-          {(['fonctionnalites', 'tarifs', 'temoignages'] as const).map((id) => (
-            <a key={id}
-              href={`#${id}`}
-              onClick={(e) => { scrollToId(id)(e); setOpen(false); }}
-              className="block px-3 py-2.5 rounded-lg text-sm font-medium text-[#1A2B4A] hover:bg-[#F0FAF7] hover:text-[#00C896] capitalize transition-colors"
-            >
-              {id === 'temoignages' ? 'À propos' : id.charAt(0).toUpperCase() + id.slice(1)}
-            </a>
-          ))}
-          <div className="pt-2 flex flex-col gap-2">
-            <Link to="/login" onClick={() => setOpen(false)}
-              className="block text-center rounded-full font-medium cursor-pointer transition-opacity duration-200 hover:opacity-85"
-              style={{ background: 'linear-gradient(135deg, #1A2B4A, #2a4070)', color: 'white', border: 'none', borderRadius: '9999px', padding: '12px 28px', fontSize: '15px', fontWeight: 500 }}>
-              Espace Coach
-            </Link>
-            <Link to="/client/login" onClick={() => setOpen(false)}
-              className="block text-center rounded-full font-medium cursor-pointer transition-opacity duration-200 hover:opacity-85"
-              style={{ background: 'linear-gradient(135deg, #00C896, #00a87e)', color: 'white', border: 'none', borderRadius: '9999px', padding: '12px 28px', fontSize: '15px', fontWeight: 500 }}>
-              Espace Client
-            </Link>
-            <Link to="/register" onClick={() => setOpen(false)}
-              className="block text-center rounded-full font-medium cursor-pointer transition-opacity duration-200 hover:opacity-85"
-              style={{ background: 'linear-gradient(135deg, #00E5FF, #00C896)', color: '#1A2B4A', border: 'none', borderRadius: '9999px', padding: '12px 28px', fontSize: '15px', fontWeight: 500 }}>
-              S'inscrire gratuitement
-            </Link>
-          </div>
-        </div>
-      )}
-    </header>
-  );
-}
 
 // ── Hero ─────────────────────────────────────────────────
 
@@ -388,8 +344,8 @@ function Features() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map(({ icon: Icon, title, description, color, bg }, i) => (
-            <FeatureCard key={title} icon={Icon} title={title} description={description} color={color} bg={bg} delay={i * 80} />
+          {features.map(({ icon: Icon, title, description, color, bg, badge }, i) => (
+            <FeatureCard key={title} icon={Icon} title={title} description={description} color={color} bg={bg} badge={badge} delay={i * 80} />
           ))}
         </div>
       </div>
@@ -398,9 +354,9 @@ function Features() {
 
 }
 
-function FeatureCard({ icon: Icon, title, description, color, bg, delay }: {
+function FeatureCard({ icon: Icon, title, description, color, bg, badge, delay }: {
   icon: React.ElementType; title: string; description: string;
-  color: string; bg: string; delay: number;
+  color: string; bg: string; badge?: string; delay: number;
 }) {
   const [ref, visible] = useScrollReveal<HTMLDivElement>();
   return (
@@ -419,7 +375,15 @@ function FeatureCard({ icon: Icon, title, description, color, bg, delay }: {
         style={{ background: bg }}>
         <Icon size={24} style={{ color }} />
       </div>
-      <h3 className="font-display text-lg font-bold text-[#1A2B4A] mb-2">{title}</h3>
+      <div className="flex items-center gap-2 mb-2">
+        <h3 className="font-display text-lg font-bold text-[#1A2B4A]">{title}</h3>
+        {badge && (
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white flex-shrink-0"
+            style={{ background: 'linear-gradient(135deg, #8B5CF6, #6D28D9)' }}>
+            {badge}
+          </span>
+        )}
+      </div>
       <p className="text-gray-500 text-sm leading-relaxed">{description}</p>
       <div className="mt-4 h-0.5 w-0 rounded-full transition-all duration-300 group-hover:w-full"
         style={{ background: `linear-gradient(90deg, ${color}, transparent)` }} />
@@ -521,9 +485,9 @@ function Pricing() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-          {plans.map(({ name, price, period, description, features: pf, cta, highlighted }, i) => (
+          {plans.map(({ name, price, period, description, groups, cta, ctaHref, highlighted }, i) => (
             <PricingCard key={name} name={name} price={price} period={period} description={description}
-              features={pf} cta={cta} highlighted={highlighted} delay={i * 100} />
+              groups={groups} cta={cta} ctaHref={ctaHref} highlighted={highlighted} delay={i * 100} />
           ))}
         </div>
       </div>
@@ -531,9 +495,9 @@ function Pricing() {
   );
 }
 
-function PricingCard({ name, price, period, description, features: pf, cta, highlighted, delay }: {
+function PricingCard({ name, price, period, description, groups, cta, ctaHref, highlighted, delay }: {
   name: string; price: string; period: string; description: string;
-  features: string[]; cta: string; highlighted: boolean; delay: number;
+  groups: PlanGroup[]; cta: string; ctaHref: string; highlighted: boolean; delay: number;
 }) {
   const [ref, visible] = useScrollReveal<HTMLDivElement>();
   return (
@@ -569,16 +533,41 @@ function PricingCard({ name, price, period, description, features: pf, cta, high
         <span className={`text-sm pb-2 ${highlighted ? 'text-gray-400' : 'text-gray-400'}`}>/{period}</span>
       </div>
 
-      <ul className="space-y-3 mb-8">
-        {pf.map((feat) => (
-          <li key={feat} className={`flex items-start gap-3 text-sm ${highlighted ? 'text-gray-300' : 'text-gray-600'}`}>
-            <Check size={16} className="flex-shrink-0 mt-0.5" style={{ color: '#00C896' }} />
-            {feat}
-          </li>
+      <div className="space-y-5 mb-8">
+        {groups.map((group) => (
+          <div key={group.title}>
+            <p className={`text-[10px] font-bold uppercase tracking-widest mb-2 ${highlighted ? 'text-gray-500' : 'text-gray-400'}`}>
+              {group.title}
+            </p>
+            <ul className="space-y-2">
+              {group.features.map((feat) => (
+                <li key={feat.label} className="flex items-center gap-2 text-sm">
+                  {feat.included ? (
+                    <Check size={14} className="flex-shrink-0" style={{ color: feat.isAI ? '#00C896' : '#00C896' }} />
+                  ) : (
+                    <X size={14} className="flex-shrink-0 text-gray-300" />
+                  )}
+                  <span className={
+                    feat.included
+                      ? (highlighted ? 'text-gray-200' : 'text-gray-700')
+                      : (highlighted ? 'text-gray-600' : 'text-gray-400')
+                  }>
+                    {feat.label}
+                  </span>
+                  {feat.badge && (
+                    <span className="ml-auto px-1.5 py-0.5 rounded text-[10px] font-bold whitespace-nowrap"
+                      style={{ background: 'rgba(0,200,150,0.15)', color: '#00A87E' }}>
+                      {feat.badge}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
         ))}
-      </ul>
+      </div>
 
-      <Link to="/register"
+      <Link to={ctaHref}
         className={`block w-full text-center py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 hover:scale-105 ${
           highlighted
             ? 'text-[#1A2B4A] hover:shadow-lg hover:shadow-[#00C896]/30'
@@ -592,87 +581,6 @@ function PricingCard({ name, price, period, description, features: pf, cta, high
   );
 }
 
-// ── Footer ───────────────────────────────────────────────
-
-function Footer() {
-  return (
-    <footer style={{ background: '#0D1B2A' }} className="text-gray-400 py-16">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-white/8">
-          {/* Brand */}
-          <div>
-            <Logo height={34} textVariant="white" />
-            <p className="mt-4 text-sm text-gray-500 leading-relaxed">
-              La plateforme tout-en-un pour coachs sportifs.
-              Sport-santé sur ordonnance · Remboursé mutuelle.
-            </p>
-            <div className="flex gap-3 mt-5">
-              <Link to="/login"
-                className="cursor-pointer transition-opacity duration-200 hover:opacity-[0.82]"
-                style={{ background: 'linear-gradient(135deg, #1A2B4A, #2a4070)', color: 'white', border: 'none', borderRadius: '9999px', padding: '13px 32px', fontSize: '15px', fontWeight: 500 }}>
-                Espace Coach
-              </Link>
-              <Link to="/client/login"
-                className="cursor-pointer transition-opacity duration-200 hover:opacity-[0.82]"
-                style={{ background: 'linear-gradient(135deg, #00C896, #00a87e)', color: 'white', border: 'none', borderRadius: '9999px', padding: '13px 32px', fontSize: '15px', fontWeight: 500 }}>
-                Espace Client
-              </Link>
-            </div>
-          </div>
-
-          {/* Produit */}
-          <div>
-            <h4 className="font-display font-bold text-white text-sm mb-4">Produit</h4>
-            <ul className="space-y-2.5">
-              <li><a href="#fonctionnalites" onClick={scrollToId('fonctionnalites')} className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">Fonctionnalités</a></li>
-              <li><a href="#tarifs" onClick={scrollToId('tarifs')} className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">Tarifs</a></li>
-              <li><a href="#temoignages" onClick={scrollToId('temoignages')} className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">Témoignages</a></li>
-              <li><Link to="/register" className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">Essai gratuit</Link></li>
-            </ul>
-          </div>
-
-          {/* Légal */}
-          <div>
-            <h4 className="font-display font-bold text-white text-sm mb-4">Légal</h4>
-            <ul className="space-y-2.5">
-              <li><a href="#" className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">CGU</a></li>
-              <li><a href="#" className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">Confidentialité</a></li>
-              <li><a href="#" className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">Mentions légales</a></li>
-              <li><a href="#" className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">Cookies</a></li>
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h4 className="font-display font-bold text-white text-sm mb-4">Contact</h4>
-            <ul className="space-y-2.5">
-              <li>
-                <a href="mailto:contact@mycarecoach.app"
-                  className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">
-                  Nous contacter
-                </a>
-              </li>
-              <li>
-                <a href="mailto:contact@mycarecoach.app"
-                  className="text-sm text-gray-500 hover:text-[#00C896] transition-colors break-all">
-                  contact@mycarecoach.app
-                </a>
-              </li>
-              <li><a href="#" className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">Support</a></li>
-              <li><a href="#" className="text-sm text-gray-500 hover:text-[#00C896] transition-colors">Partenaires</a></li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-600">
-          <p>© 2025 MyCareCoach. Tous droits réservés.</p>
-          <p>Fait avec ♥ pour les coachs sportifs de France</p>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
 // ─────────────────────────────────────────────────────────
 // Page principale
 // ─────────────────────────────────────────────────────────
@@ -680,14 +588,15 @@ function Footer() {
 export default function LandingPage() {
   return (
     <div className="min-h-screen" style={{ fontFamily: "'DM Sans', system-ui, sans-serif", colorScheme: 'light' }}>
-      <Header />
+      <LandingHeader />
       <main>
+        <InstallPWABanner />
         <Hero />
         <Features />
         <Testimonials />
         <Pricing />
       </main>
-      <Footer />
+      <LandingFooter />
     </div>
   );
 }
