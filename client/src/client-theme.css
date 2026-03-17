@@ -1,0 +1,91 @@
+/* MyCareCoach Client Theme */
+
+:root {
+  /* Couleurs principales */
+  --mcc-primary:        #6C5CE7;
+  --mcc-primary-light:  #A29BFE;
+  --mcc-primary-dark:   #4834D4;
+  --mcc-accent:         #00CEC9;
+  --mcc-accent-warm:    #FDCB6E;
+  --mcc-success:        #00B894;
+  --mcc-danger:         #E17055;
+
+  /* Fond & texte */
+  --mcc-bg:             #F5F5FA;
+  --mcc-card:           #FFFFFF;
+  --mcc-text:           #2D3436;
+  --mcc-text-sec:       #636E72;
+  --mcc-text-hint:      #B2BEC3;
+  --mcc-border:         rgba(0,0,0,0.06);
+  --mcc-shadow:         0 1px 4px rgba(0,0,0,0.06);
+
+  /* Dégradé principal */
+  --mcc-gradient:       linear-gradient(135deg, #6C5CE7, #00CEC9);
+
+  /* Sidebar */
+  --mcc-sidebar:        #1E1245;
+  --mcc-sidebar-hover:  #2A1B5E;
+  --mcc-sidebar-active: linear-gradient(135deg, rgba(108,92,231,0.3), rgba(0,206,201,0.15));
+  --mcc-sidebar-border: rgba(255,255,255,0.08);
+}
+
+/* ── Mode sombre ────────────────────────────── */
+.dark {
+  --mcc-bg:             #1A1A2E;
+  --mcc-card:           #2D2D44;
+  --mcc-text:           #E0E0E0;
+  --mcc-text-sec:       #A0A0B0;
+  --mcc-text-hint:      #6B6B80;
+  --mcc-border:         rgba(255,255,255,0.08);
+  --mcc-shadow:         0 1px 8px rgba(0,0,0,0.4);
+}
+
+/* Inputs & textareas en mode sombre (override inline styles via !important) */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #2D2D44 !important;
+  border-color: #3D3D55 !important;
+  color: #E0E0E0 !important;
+}
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #6B6B80 !important;
+}
+
+/* ── Scrollbar masquée ─────────────────────── */
+.mcc-scroll-hide::-webkit-scrollbar { display: none; }
+.mcc-scroll-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Sidebar nav links ─────────────────────── */
+.mcc-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border-radius: 10px;
+  color: rgba(255,255,255,0.55);
+  font-size: 13.5px;
+  font-weight: 400;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+}
+.mcc-nav-link:hover {
+  background: #2A1B5E;
+  color: rgba(255,255,255,0.85);
+}
+.mcc-nav-link.active {
+  background: rgba(0, 200, 150, 0.15);
+  color: #00CEC9;
+  border-left: 3px solid #00CEC9;
+  padding-left: 11px;
+}
+.mcc-nav-link.active svg {
+  stroke: #00CEC9;
+}
+.mcc-nav-link-logout:hover {
+  background: rgba(225,112,85,0.15) !important;
+  color: #E17055 !important;
+}

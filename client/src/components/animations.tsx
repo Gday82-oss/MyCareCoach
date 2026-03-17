@@ -25,7 +25,7 @@ export function AnimatedNumber({ value, suffix = '' }: { value: number; suffix?:
     <motion.span
       initial={{ opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5, type: 'spring', stiffness: 100 }}
+      transition={{ duration: 0.5, type: 'spring' as const, stiffness: 100 }}
       className="inline-block"
     >
       {value}{suffix}

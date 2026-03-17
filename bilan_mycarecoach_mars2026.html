@@ -1,0 +1,79 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.wrap { padding: 1rem 0; display: flex; flex-direction: column; gap: 16px; }
+.section { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; }
+.sec-header { padding: 10px 16px; display: flex; align-items: center; gap: 10px; background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); }
+.sec-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+.dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.rows { display: flex; flex-direction: column; }
+.row { display: flex; align-items: flex-start; justify-content: space-between; padding: 9px 16px; border-bottom: 0.5px solid var(--color-border-tertiary); gap: 12px; }
+.row:last-child { border-bottom: none; }
+.row-left { flex: 1; }
+.row-label { font-size: 13px; color: var(--color-text-primary); }
+.row-sub { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+.badge { font-size: 10px; padding: 3px 9px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+.ok { background: #E1F5EE; color: #0F6E56; }
+.warn { background: #FAEEDA; color: #854F0B; }
+.ko { background: #FCEBEB; color: #A32D2D; }
+.p1 { background: #FCEBEB; color: #A32D2D; }
+.p2 { background: #FAEEDA; color: #854F0B; }
+.p3 { background: #E6F1FB; color: #185FA5; }
+.p4 { background: #EEEDFE; color: #534AB7; }
+.p5 { background: var(--color-background-secondary); color: var(--color-text-secondary); }
+</style>
+
+<div class="wrap">
+
+  <div class="section">
+    <div class="sec-header">
+      <div class="dot" style="background:#1D9E75;"></div>
+      <div class="sec-title">Ce qui est terminé et fonctionnel</div>
+    </div>
+    <div class="rows">
+      <div class="row"><div class="row-left"><div class="row-label">Infrastructure VPS + déploiement</div><div class="row-sub">Nginx, PM2, backup BDD, monitoring UptimeRobot</div></div><span class="badge ok">✅ OK</span></div>
+      <div class="row"><div class="row-left"><div class="row-label">Auth Coach + Client</div><div class="row-sub">Email/password + Google OAuth, invitations, emails Resend</div></div><span class="badge ok">✅ OK</span></div>
+      <div class="row"><div class="row-left"><div class="row-label">Interface Coach complète</div><div class="row-sub">Dashboard, clients, séances, métriques, facturation PDF, attestations</div></div><span class="badge ok">✅ OK</span></div>
+      <div class="row"><div class="row-left"><div class="row-label">Chatbot IA Coach</div><div class="row-sub">100 msg/mois, données OMS, sélecteur client, bouton flottant</div></div><span class="badge ok">✅ OK</span></div>
+      <div class="row"><div class="row-left"><div class="row-label">PWA Coach + Client</div><div class="row-sub">Installable, offline, notifications push, icônes</div></div><span class="badge ok">✅ OK</span></div>
+      <div class="row"><div class="row-left"><div class="row-label">Programmes coach → client</div><div class="row-sub">Création, assignation, activation, affichage côté client</div></div><span class="badge ok">✅ Fait aujourd'hui</span></div>
+      <div class="row"><div class="row-left"><div class="row-label">Profil client connecté</div><div class="row-sub">Données réelles Supabase, avatar initiales</div></div><span class="badge ok">✅ Fait aujourd'hui</span></div>
+      <div class="row"><div class="row-left"><div class="row-label">Séances client (onglet)</div><div class="row-sub">Vraies données, filtre semaine, badges type</div></div><span class="badge ok">✅ OK</span></div>
+      <div class="row"><div class="row-left"><div class="row-label">Landing page</div><div class="row-sub">SEO, Open Graph, modal démo, favicon, Search Console</div></div><span class="badge ok">✅ OK</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-header">
+      <div class="dot" style="background:#EF9F27;"></div>
+      <div class="sec-title">Bugs connus à corriger</div>
+    </div>
+    <div class="rows">
+      <div class="row"><div class="row-left"><div class="row-label">Conflit de session coach/client</div><div class="row-sub">Même navigateur → les deux sessions se mélangent (localStorage)</div></div><span class="badge warn">⚠️ Connu</span></div>
+      <div class="row"><div class="row-left"><div class="row-label">Bouton "Activer" programme manquant</div><div class="row-sub">Badge brouillon visible mais bouton absent sur les cartes</div></div><span class="badge warn">⚠️ À corriger</span></div>
+      <div class="row"><div class="row-left"><div class="row-label">Markdown brut sur programme Anne</div><div class="row-sub">Les ## s'affichent dans l'aperçu carte coach</div></div><span class="badge warn">⚠️ À corriger</span></div>
+      <div class="row"><div class="row-left"><div class="row-label">Crédits Anthropic</div><div class="row-sub">À recharger régulièrement sur console.anthropic.com</div></div><span class="badge warn">⚠️ À surveiller</span></div>
+      <div class="row"><div class="row-left"><div class="row-label">Liens landing page</div><div class="row-sub">Fonctionnalités, Tarifs, CGU — peut-être cassés</div></div><span class="badge warn">⚠️ À vérifier</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-header">
+      <div class="dot" style="background:#E24B4A;"></div>
+      <div class="sec-title">Reste à faire — par priorité</div>
+    </div>
+    <div class="rows">
+      <div class="row"><div class="row-left"><div class="row-label">Onglet Métriques client</div><div class="row-sub">Saisie poids/mesures par le client → table metriques</div></div><span class="badge p1">🔴 P1</span></div>
+      <div class="row"><div class="row-left"><div class="row-label">Générateur de programmes IA</div><div class="row-sub">Formulaire coach → Claude API → programme structuré sauvegardé</div></div><span class="badge p1">🔴 P1</span></div>
+      <div class="row"><div class="row-left"><div class="row-label">Notifications push client</div><div class="row-sub">Rappels séances sur le téléphone du client</div></div><span class="badge p2">🟠 P2</span></div>
+      <div class="row"><div class="row-left"><div class="row-label">Envoi attestations par email</div><div class="row-sub">Coach → envoie PDF directement au client</div></div><span class="badge p2">🟠 P2</span></div>
+      <div class="row"><div class="row-left"><div class="row-label">Audit landing page</div><div class="row-sub">Tous les boutons et liens fonctionnels, page Tarifs mise à jour</div></div><span class="badge p2">🟠 P2</span></div>
+      <div class="row"><div class="row-left"><div class="row-label">Stripe — abonnements</div><div class="row-sub">Plan Gratuit / Pro / Business avec paiement mensuel</div></div><span class="badge p3">🔵 P3</span></div>
+      <div class="row"><div class="row-left"><div class="row-label">Témoignages landing page</div><div class="row-sub">Après retours testeurs — social proof</div></div><span class="badge p3">🔵 P3</span></div>
+      <div class="row"><div class="row-left"><div class="row-label">Séparation sous-domaines</div><div class="row-sub">coach.mycarecoach.app / app.mycarecoach.app → résout le conflit session</div></div><span class="badge p4">🟣 P4</span></div>
+      <div class="row"><div class="row-left"><div class="row-label">Publication Play Store</div><div class="row-sub">Via Capacitor — horizon 1-2 mois</div></div><span class="badge p4">🟣 P4</span></div>
+      <div class="row"><div class="row-left"><div class="row-label">Nettoyage repo GitHub</div><div class="row-sub">Taille dépasse les limites Claude</div></div><span class="badge p5">⚙️ P5</span></div>
+    </div>
+  </div>
+
+</div>

@@ -87,7 +87,7 @@ export default function ClientDashboard({ client }: ClientDashboardProps) {
   }
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div></div>;
+    return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#6C5CE7]"></div></div>;
   }
 
   return (
@@ -109,8 +109,8 @@ export default function ClientDashboard({ client }: ClientDashboardProps) {
               <p className="text-sm text-gray-500">Séances réalisées</p>
               <p className="text-3xl font-bold text-gray-800">{stats.seancesFaites}/{stats.totalSeances}</p>
             </div>
-            <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center">
-              <Calendar className="text-emerald-600" size={24} />
+            <div className="w-12 h-12 bg-[#6C5CE7]/15 rounded-full flex items-center justify-center">
+              <Calendar className="text-[#6C5CE7]" size={24} />
             </div>
           </div>
         </motion.div>
@@ -168,7 +168,7 @@ export default function ClientDashboard({ client }: ClientDashboardProps) {
       </div>
 
       {/* Prochaine séance */}
-      <div className="bg-gradient-to-r from-emerald-500 to-blue-500 rounded-2xl p-8 text-white">
+      <div className="bg-gradient-to-r from-[#6C5CE7] to-[#A29BFE] rounded-2xl p-8 text-white">
         <h2 className="text-xl font-semibold mb-4">Prochaine séance</h2>
         
         {prochaineSeance ? (
@@ -184,18 +184,18 @@ export default function ClientDashboard({ client }: ClientDashboardProps) {
                   month: 'long' 
                 })}
               </p>
-              <p className="text-emerald-100">
+              <p className="text-[#A29BFE]">
                 {prochaineSeance.heure?.slice(0, 5)} - {prochaineSeance.type}
               </p>
               {prochaineSeance.coach && (
-                <p className="text-sm text-emerald-100 mt-1">
+                <p className="text-sm text-[#A29BFE] mt-1">
                   Avec: {prochaineSeance.coach.prenom} {prochaineSeance.coach.nom}
                 </p>
               )}
             </div>
           </div>
         ) : (
-          <p className="text-emerald-100">Aucune séance planifiée. Contactez votre coach pour planifier votre prochaine séance.</p>
+          <p className="text-[#A29BFE]">Aucune séance planifiée. Contactez votre coach pour planifier votre prochaine séance.</p>
         )}
       </div>
     </div>

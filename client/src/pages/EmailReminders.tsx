@@ -175,7 +175,7 @@ export default function EmailReminders() {
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div></div>;
+    return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00C896]"></div></div>;
   }
 
   return (
@@ -196,7 +196,7 @@ export default function EmailReminders() {
           <button
             onClick={sendTestEmail}
             disabled={sending}
-            className="flex items-center gap-2 bg-emerald-500 text-white px-3 md:px-4 py-2.5 rounded-xl hover:bg-emerald-600 disabled:opacity-50 min-h-[44px]"
+            className="flex items-center gap-2 bg-[#00C896] text-white px-3 md:px-4 py-2.5 rounded-xl hover:bg-[#00B080] disabled:opacity-50 min-h-[44px]"
           >
             <Send size={18} />
             {sending ? 'Envoi...' : 'Test'}
@@ -313,7 +313,7 @@ export default function EmailReminders() {
                   type="checkbox" 
                   checked={config.rappel_24h}
                   onChange={(e) => setConfig({...config, rappel_24h: e.target.checked})}
-                  className="w-5 h-5 text-emerald-500"
+                  className="w-5 h-5 text-[#00C896]"
                 />
                 <div>
                   <p className="font-medium">Rappel 24h avant</p>
@@ -326,7 +326,7 @@ export default function EmailReminders() {
                   type="checkbox" 
                   checked={config.rappel_1h}
                   onChange={(e) => setConfig({...config, rappel_1h: e.target.checked})}
-                  className="w-5 h-5 text-emerald-500"
+                  className="w-5 h-5 text-[#00C896]"
                 />
                 <div>
                   <p className="font-medium">Rappel 1h avant</p>
@@ -339,7 +339,7 @@ export default function EmailReminders() {
                   type="checkbox" 
                   checked={config.confirmation_seance}
                   onChange={(e) => setConfig({...config, confirmation_seance: e.target.checked})}
-                  className="w-5 h-5 text-emerald-500"
+                  className="w-5 h-5 text-[#00C896]"
                 />
                 <div>
                   <p className="font-medium">Confirmation de séance</p>
@@ -352,7 +352,7 @@ export default function EmailReminders() {
                   type="checkbox" 
                   checked={config.nouvelle_seance}
                   onChange={(e) => setConfig({...config, nouvelle_seance: e.target.checked})}
-                  className="w-5 h-5 text-emerald-500"
+                  className="w-5 h-5 text-[#00C896]"
                 />
                 <div>
                   <p className="font-medium">Nouvelle séance planifiée</p>
@@ -365,7 +365,7 @@ export default function EmailReminders() {
               <button onClick={() => setShowConfig(false)} className="flex-1 py-3 border border-gray-300 dark:border-[#2E3D55] rounded-xl hover:bg-gray-50 dark:bg-[#0F1923]">
                 Annuler
               </button>
-              <button onClick={saveConfig} className="flex-1 py-3 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600">
+              <button onClick={saveConfig} className="flex-1 py-3 bg-[#00C896] text-white rounded-xl hover:bg-[#00B080]">
                 Enregistrer
               </button>
             </div>

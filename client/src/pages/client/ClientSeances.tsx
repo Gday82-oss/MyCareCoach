@@ -4,7 +4,7 @@ import { Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const TYPE_COLORS: Record<string, { bg: string; color: string }> = {
-  cardio:       { bg: 'rgba(255,140,66,0.12)',  color: '#FF8C42' },
+  cardio:       { bg: 'rgba(108,92,231,0.12)',  color: '#6C5CE7' },
   renforcement: { bg: 'rgba(26,43,74,0.10)',    color: '#1A2B4A' },
   mobilite:     { bg: 'rgba(0,200,150,0.12)',   color: '#00C896' },
   recuperation: { bg: 'rgba(0,229,255,0.12)',   color: '#00B4CC' },
@@ -61,7 +61,7 @@ export default function ClientSeances({ client }: ClientSeancesProps) {
   const seancesPassees = seances.filter(s => s.fait || new Date(s.date) < new Date());
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div></div>;
+    return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#6C5CE7]"></div></div>;
   }
 
   return (
@@ -91,11 +91,11 @@ export default function ClientSeances({ client }: ClientSeancesProps) {
                 style={{ borderLeftColor: '#00C896', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}
               >
                 <div className="flex items-start gap-4">
-                  <div className="w-14 flex-shrink-0 rounded-xl flex flex-col items-center justify-center py-2 bg-emerald-50">
-                    <span className="text-[11px] font-semibold text-emerald-600 uppercase">
+                  <div className="w-14 flex-shrink-0 rounded-xl flex flex-col items-center justify-center py-2 bg-[#6C5CE7]/10">
+                    <span className="text-[11px] font-semibold text-[#6C5CE7] uppercase">
                       {new Date(seance.date + 'T00:00:00').toLocaleDateString('fr-FR', { month: 'short' })}
                     </span>
-                    <span className="text-xl font-bold text-emerald-600 leading-none">
+                    <span className="text-xl font-bold text-[#6C5CE7] leading-none">
                       {new Date(seance.date + 'T00:00:00').getDate()}
                     </span>
                   </div>

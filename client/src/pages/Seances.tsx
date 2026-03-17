@@ -114,7 +114,7 @@ export default function Seances() {
 
   if (loading) return (
     <div className="flex items-center justify-center h-64">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00C896]"></div>
     </div>
   );
 
@@ -130,14 +130,14 @@ export default function Seances() {
           <div className="flex bg-gray-100 dark:bg-[#243044] rounded-xl p-1">
             <button
               onClick={() => setViewMode('calendar')}
-              className={`p-2 rounded-lg transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center ${viewMode === 'calendar' ? 'bg-white dark:bg-[#1A2535] shadow-sm text-emerald-600' : 'text-gray-500 dark:text-[#8896A8]'}`}
+              className={`p-2 rounded-lg transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center ${viewMode === 'calendar' ? 'bg-white dark:bg-[#1A2535] shadow-sm text-[#00C896]' : 'text-gray-500 dark:text-[#8896A8]'}`}
               title="Vue calendrier"
             >
               <CalendarDays size={18} />
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-2 rounded-lg transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center ${viewMode === 'list' ? 'bg-white dark:bg-[#1A2535] shadow-sm text-emerald-600' : 'text-gray-500 dark:text-[#8896A8]'}`}
+              className={`p-2 rounded-lg transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center ${viewMode === 'list' ? 'bg-white dark:bg-[#1A2535] shadow-sm text-[#00C896]' : 'text-gray-500 dark:text-[#8896A8]'}`}
               title="Vue liste"
             >
               <LayoutList size={18} />
@@ -145,7 +145,7 @@ export default function Seances() {
           </div>
           <button
             onClick={() => { setSaveError(''); setShowAddModal(true); }}
-            className="flex items-center gap-2 bg-emerald-500 text-white px-4 md:px-6 py-3 min-h-[44px] rounded-xl hover:bg-emerald-600 shadow-lg shadow-emerald-500/25 text-sm md:text-base font-medium"
+            className="flex items-center gap-2 bg-[#00C896] text-white px-4 md:px-6 py-3 min-h-[44px] rounded-xl hover:bg-[#00B080] shadow-lg shadow-[#00C896]/25 text-sm md:text-base font-medium"
           >
             <Plus size={18} />
             <span className="hidden sm:inline">Nouvelle séance</span>
@@ -197,12 +197,12 @@ export default function Seances() {
                     whileHover={{ scale: 1.02 }}
                     className={`min-h-[48px] md:min-h-[90px] p-0.5 md:p-2 rounded-lg border ${
                       isToday
-                        ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
-                        : 'border-gray-100 dark:border-[#2E3D55] hover:border-emerald-200'
+                        ? 'border-[#00C896] bg-[#00C896]/10 dark:bg-[#00C896]/10'
+                        : 'border-gray-100 dark:border-[#2E3D55] hover:border-[#00C896]/30'
                     } cursor-pointer`}
                     onClick={() => { setSaveError(''); setShowAddModal(true); }}
                   >
-                    <span className={`text-[11px] md:text-sm font-medium block text-center md:text-left ${isToday ? 'text-emerald-600' : 'text-gray-700 dark:text-[#D4DAE6]'}`}>
+                    <span className={`text-[11px] md:text-sm font-medium block text-center md:text-left ${isToday ? 'text-[#00C896]' : 'text-gray-700 dark:text-[#D4DAE6]'}`}>
                       {jour}
                     </span>
                     {/* Desktop: nom + heure */}
@@ -219,7 +219,7 @@ export default function Seances() {
                     {/* Mobile: point coloré si séance */}
                     {seancesJour.length > 0 && (
                       <div className="md:hidden flex justify-center mt-0.5">
-                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#00C896]" />
                       </div>
                     )}
                   </motion.div>
@@ -240,7 +240,7 @@ export default function Seances() {
                 <p className="text-gray-500 dark:text-[#8896A8] font-medium">Aucune séance ce mois</p>
                 <button
                   onClick={() => { setSaveError(''); setShowAddModal(true); }}
-                  className="mt-4 inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium"
+                  className="mt-4 inline-flex items-center gap-2 bg-[#00C896]/10 text-[#00C896] px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium"
                 >
                   <Plus size={16} /> Planifier une séance
                 </button>
@@ -254,12 +254,12 @@ export default function Seances() {
                     key={s.id}
                     className={`flex items-start gap-4 p-4 rounded-xl border ${
                       isToday
-                        ? 'border-emerald-300 bg-emerald-50 dark:bg-emerald-900/20 dark:border-emerald-700'
+                        ? 'border-[#00C896]/50 bg-[#00C896]/10 dark:bg-[#00C896]/10 dark:border-[#00C896]/50'
                         : 'border-gray-100 dark:border-[#2E3D55] bg-gray-50 dark:bg-[#0F1923]'
                     }`}
                   >
                     {/* Date badge */}
-                    <div className={`w-12 flex-shrink-0 rounded-xl flex flex-col items-center justify-center py-2 ${s.fait ? 'bg-green-100 dark:bg-green-900/30' : isToday ? 'bg-emerald-500' : 'bg-white dark:bg-[#243044]'}`}>
+                    <div className={`w-12 flex-shrink-0 rounded-xl flex flex-col items-center justify-center py-2 ${s.fait ? 'bg-green-100 dark:bg-green-900/30' : isToday ? 'bg-[#00C896]' : 'bg-white dark:bg-[#243044]'}`}>
                       <span className={`text-[10px] font-semibold uppercase ${s.fait ? 'text-green-700' : isToday ? 'text-white' : 'text-gray-500 dark:text-[#8896A8]'}`}>
                         {dateObj.toLocaleDateString('fr-FR', { month: 'short' })}
                       </span>
@@ -284,7 +284,7 @@ export default function Seances() {
                       </div>
                       <div className="flex flex-wrap items-center gap-2 mt-1.5">
                         <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-[#8896A8]">
-                          <Clock size={12} className="text-emerald-500" />{s.heure.slice(0, 5)}
+                          <Clock size={12} className="text-[#00C896]" />{s.heure.slice(0, 5)}
                         </span>
                         {s.duree && (
                           <span className="text-xs text-gray-400 dark:text-[#8896A8]">{s.duree} min</span>
@@ -297,7 +297,7 @@ export default function Seances() {
                       {!s.fait && (
                         <button
                           onClick={() => marquerRealisee(s.id)}
-                          className="mt-2 text-xs text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1 underline underline-offset-2"
+                          className="mt-2 text-xs text-[#00C896] hover:text-[#00B080] font-medium flex items-center gap-1 underline underline-offset-2"
                         >
                           <CheckCircle2 size={13} /> Marquer comme réalisée
                         </button>
@@ -392,7 +392,7 @@ export default function Seances() {
                   {/* Client */}
                   <div>
                     <label className="block text-sm font-medium mb-1 dark:text-[#D4DAE6]">Client</label>
-                    <select name="client_id" required className="w-full px-4 py-2 border border-gray-300 dark:border-[#2E3D55] rounded-lg focus:ring-2 focus:ring-emerald-500 dark:bg-[#0F1923] dark:text-[#E8EDF5]">
+                    <select name="client_id" required className="w-full px-4 py-2 border border-gray-300 dark:border-[#2E3D55] rounded-lg focus:ring-2 focus:ring-[#00C896] dark:bg-[#0F1923] dark:text-[#E8EDF5]">
                       <option value="">Choisir un client…</option>
                       {clients.map(c => (
                         <option key={c.id} value={c.id}>{c.prenom} {c.nom}</option>
@@ -404,11 +404,11 @@ export default function Seances() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium mb-1 dark:text-[#D4DAE6]">Date</label>
-                      <input name="date" type="date" required className="w-full px-4 py-2 border border-gray-300 dark:border-[#2E3D55] rounded-lg focus:ring-2 focus:ring-emerald-500 dark:bg-[#0F1923] dark:text-[#E8EDF5]" />
+                      <input name="date" type="date" required className="w-full px-4 py-2 border border-gray-300 dark:border-[#2E3D55] rounded-lg focus:ring-2 focus:ring-[#00C896] dark:bg-[#0F1923] dark:text-[#E8EDF5]" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1 dark:text-[#D4DAE6]">Heure</label>
-                      <input name="heure" type="time" required className="w-full px-4 py-2 border border-gray-300 dark:border-[#2E3D55] rounded-lg focus:ring-2 focus:ring-emerald-500 dark:bg-[#0F1923] dark:text-[#E8EDF5]" />
+                      <input name="heure" type="time" required className="w-full px-4 py-2 border border-gray-300 dark:border-[#2E3D55] rounded-lg focus:ring-2 focus:ring-[#00C896] dark:bg-[#0F1923] dark:text-[#E8EDF5]" />
                     </div>
                   </div>
 
@@ -416,7 +416,7 @@ export default function Seances() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium mb-1 dark:text-[#D4DAE6]">Type</label>
-                      <select name="type" className="w-full px-4 py-2 border border-gray-300 dark:border-[#2E3D55] rounded-lg focus:ring-2 focus:ring-emerald-500 dark:bg-[#0F1923] dark:text-[#E8EDF5]">
+                      <select name="type" className="w-full px-4 py-2 border border-gray-300 dark:border-[#2E3D55] rounded-lg focus:ring-2 focus:ring-[#00C896] dark:bg-[#0F1923] dark:text-[#E8EDF5]">
                         <option value="mixte">Mixte</option>
                         <option value="renforcement">Renforcement</option>
                         <option value="cardio">Cardio</option>
@@ -426,14 +426,14 @@ export default function Seances() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1 dark:text-[#D4DAE6]">Durée (min)</label>
-                      <input name="duree" type="number" defaultValue={60} min={15} max={240} step={15} className="w-full px-4 py-2 border border-gray-300 dark:border-[#2E3D55] rounded-lg focus:ring-2 focus:ring-emerald-500 dark:bg-[#0F1923] dark:text-[#E8EDF5]" />
+                      <input name="duree" type="number" defaultValue={60} min={15} max={240} step={15} className="w-full px-4 py-2 border border-gray-300 dark:border-[#2E3D55] rounded-lg focus:ring-2 focus:ring-[#00C896] dark:bg-[#0F1923] dark:text-[#E8EDF5]" />
                     </div>
                   </div>
 
                   {/* Notes */}
                   <div>
                     <label className="block text-sm font-medium mb-1 dark:text-[#D4DAE6]">Notes</label>
-                    <textarea name="notes" rows={3} placeholder="Objectifs, consignes…" className="w-full px-4 py-2 border border-gray-300 dark:border-[#2E3D55] rounded-lg focus:ring-2 focus:ring-emerald-500 dark:bg-[#0F1923] dark:text-[#E8EDF5] resize-none"></textarea>
+                    <textarea name="notes" rows={3} placeholder="Objectifs, consignes…" className="w-full px-4 py-2 border border-gray-300 dark:border-[#2E3D55] rounded-lg focus:ring-2 focus:ring-[#00C896] dark:bg-[#0F1923] dark:text-[#E8EDF5] resize-none"></textarea>
                   </div>
                 </div>
               </div>
@@ -449,7 +449,7 @@ export default function Seances() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 py-3 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="flex-1 py-3 bg-[#00C896] text-white rounded-xl hover:bg-[#00B080] disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {saving ? 'Enregistrement…' : 'Créer la séance'}
                 </button>

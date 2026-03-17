@@ -8,7 +8,6 @@ import Auth from './pages/Auth';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import CoachApp from './CoachApp';
-import ClientPortal from './pages/ClientPortal';
 import ClientApp from './ClientApp';
 import ClientLogin from './pages/client-mobile/ClientLogin';
 import ClientSetup from './pages/client-mobile/ClientSetup';
@@ -85,7 +84,7 @@ function App() {
   if (loading || clientLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00C896]"></div>
       </div>
     );
   }
@@ -110,7 +109,7 @@ function App() {
           !user
             ? <Navigate to="/login" replace />
             : userType === 'client'
-              ? <ClientPortal />
+              ? <Navigate to="/client" replace />
               : <CoachApp />
         }
       />

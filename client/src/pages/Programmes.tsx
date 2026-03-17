@@ -112,7 +112,7 @@ export default function Programmes() {
     }
   };
 
-  if (loading) return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div></div>;
+  if (loading) return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00C896]"></div></div>;
 
   return (
     <div className="p-4 md:p-8">
@@ -121,7 +121,7 @@ export default function Programmes() {
           <h1 className="text-xl md:text-3xl font-bold text-gray-800 dark:text-[#E8EDF5]">Programmes</h1>
           <p className="text-gray-600 dark:text-[#A8B4C4] mt-1">{programmes.length} programme{programmes.length > 1 ? 's' : ''}</p>
         </div>
-        <button onClick={() => setShowAddModal(true)} className="flex items-center gap-2 bg-emerald-500 text-white px-6 py-3 rounded-xl hover:bg-emerald-600 shadow-lg shadow-emerald-500/25">
+        <button onClick={() => setShowAddModal(true)} className="flex items-center gap-2 bg-[#00C896] text-white px-6 py-3 rounded-xl hover:bg-[#00B080] shadow-lg shadow-[#00C896]/25">
           <Plus size={20} />
           Nouveau programme
         </button>
@@ -133,7 +133,7 @@ export default function Programmes() {
             <FileText size={32} className="text-gray-400" />
           </div>
           <h3 className="text-lg font-medium text-gray-800 dark:text-[#E8EDF5] mb-2">Aucun programme</h3>
-          <p className="text-gray-500 dark:text-[#8896A8]">Cliquez sur <span className="font-medium text-emerald-600">+ Nouveau programme</span> en haut à droite pour commencer</p>
+          <p className="text-gray-500 dark:text-[#8896A8]">Cliquez sur <span className="font-medium text-[#00C896]">+ Nouveau programme</span> en haut à droite pour commencer</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -198,8 +198,8 @@ export default function Programmes() {
               <p className="text-gray-600 dark:text-[#A8B4C4] text-sm mb-4">{stripMarkdown(prog.contenu)}</p>
 
               <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-[#2E3D55]">
-                <span className="text-sm text-emerald-600 font-medium">Voir le détail</span>
-                <ChevronRight size={20} className="text-emerald-600" />
+                <span className="text-sm text-[#00C896] font-medium">Voir le détail</span>
+                <ChevronRight size={20} className="text-[#00C896]" />
               </div>
             </motion.div>
           ))}
@@ -255,12 +255,12 @@ export default function Programmes() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">Titre *</label>
-                  <input name="titre" required className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500" placeholder="Programme de renforcement..." />
+                  <input name="titre" required className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00C896]" placeholder="Programme de renforcement..." />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium mb-1">Client *</label>
-                  <select name="client_id" required className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500">
+                  <select name="client_id" required className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00C896]">
                     <option value="">Choisir un client...</option>
                     {clients.map(c => <option key={c.id} value={c.id}>{c.prenom} {c.nom}</option>)}
                   </select>
@@ -269,24 +269,24 @@ export default function Programmes() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-1">Durée (semaines)</label>
-                    <input name="duree_semaines" type="number" defaultValue={4} min={1} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500" />
+                    <input name="duree_semaines" type="number" defaultValue={4} min={1} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00C896]" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1">Date de début</label>
-                    <input name="date_debut" type="date" className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500" />
+                    <input name="date_debut" type="date" className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00C896]" />
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium mb-1">Contenu du programme *</label>
-                  <textarea name="contenu" required rows={10} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500" placeholder="Semaine 1:..." />
+                  <textarea name="contenu" required rows={10} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00C896]" placeholder="Semaine 1:..." />
                 </div>
               </div>
               </div>
 
               <div className="border-t border-gray-100 dark:border-[#2E3D55] p-4 md:p-6 flex gap-3 flex-shrink-0">
                 <button type="button" onClick={() => setShowAddModal(false)} className="flex-1 py-3 border border-gray-300 dark:border-[#2E3D55] text-gray-700 dark:text-[#D4DAE6] rounded-xl hover:bg-gray-50 dark:bg-[#0F1923]">Annuler</button>
-                <button type="submit" className="flex-1 py-3 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600">Créer</button>
+                <button type="submit" className="flex-1 py-3 bg-[#00C896] text-white rounded-xl hover:bg-[#00B080]">Créer</button>
               </div>
             </form>
           </motion.div>

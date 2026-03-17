@@ -1,12 +1,12 @@
 {
-  "name": "MyCareCoach — Espace Coach",
-  "short_name": "MyCareCoach",
+  "name": "MyCareCoach Coach",
+  "short_name": "Coach",
   "description": "Gérez vos clients, séances et programmes depuis votre téléphone",
   "start_url": "/app",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#1A2B4A",
-  "theme_color": "#1A2B4A",
+  "theme_color": "#00C896",
   "icons": [
     {
       "src": "/icons/icon-192.png",
@@ -28,5 +28,5 @@
   ],
   "categories": ["health", "fitness", "business"],
   "lang": "fr",
-  "scope": "/app"
+  "scope": "/app/"
 }

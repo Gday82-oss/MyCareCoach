@@ -362,11 +362,10 @@ app.post('/chat-coach', authMiddleware, async (req: Request, res: Response) => {
 app.get('/client/programme', authMiddleware, async (req: Request, res: Response) => {
   const user = (req as any).user;
 
-  // Trouve le client par email (l'auth Supabase utilise l'email comme identifiant)
   const { data: client, error: clientError } = await supabaseAdmin
     .from('clients')
     .select('id, coach_id')
-    .eq('email', user.email)
+    .eq('user_id', user.id)
     .maybeSingle();
 
   if (clientError || !client) {
@@ -418,18 +417,56 @@ app.get('/client/profil', authMiddleware, async (req: Request, res: Response) =>
 
   const { data: client, error } = await supabaseAdmin
     .from('clients')
-    .select('id, prenom, nom, email, telephone, date_naissance, objectifs, coach_id')
-    .eq('email', user.email)
+    .select('id, prenom, nom, email, telephone, date_naissance, objectifs, coach_id, taille')
+    .eq('user_id', user.id)
     .maybeSingle();
 
   if (error || !client) {
-    console.error('[client/profil] Client non trouvé pour email:', user.email);
+    console.error('[client/profil] Client non trouvé pour user_id:', user.id);
     res.status(404).json({ error: 'Client non trouvé' });
     return;
   }
 
   console.log('[client/profil] Profil retourné pour:', client.email);
   res.json({ client });
+});
+
+// PATCH /client/profil — met à jour les champs autorisés (ex: taille)
+app.patch('/client/profil', authMiddleware, async (req: Request, res: Response) => {
+  const user = (req as any).user;
+  const { taille } = req.body;
+
+  const { data: client } = await supabaseAdmin
+    .from('clients')
+    .select('id')
+    .eq('user_id', user.id)
+    .maybeSingle();
+
+  if (!client) {
+    res.status(404).json({ error: 'Client non trouvé' });
+    return;
+  }
+
+  const updates: Record<string, any> = {};
+  if (taille != null && !isNaN(parseFloat(taille))) updates.taille = parseFloat(taille);
+
+  if (Object.keys(updates).length === 0) {
+    res.status(400).json({ error: 'Aucun champ à mettre à jour' });
+    return;
+  }
+
+  const { error } = await supabaseAdmin
+    .from('clients')
+    .update(updates)
+    .eq('id', client.id);
+
+  if (error) {
+    console.error('[PATCH client/profil]', error.message);
+    res.status(500).json({ error: error.message });
+    return;
+  }
+
+  res.json({ ok: true });
 });
 
 // ─── Routes métriques client ──────────────────────────────────────────────────
@@ -441,7 +478,7 @@ app.get('/client/metriques', authMiddleware, async (req: Request, res: Response)
   const { data: client } = await supabaseAdmin
     .from('clients')
     .select('id')
-    .eq('email', user.email)
+    .eq('user_id', user.id)
     .maybeSingle();
 
   if (!client) {
@@ -469,13 +506,17 @@ app.get('/client/metriques', authMiddleware, async (req: Request, res: Response)
 
 app.post('/client/metriques', authMiddleware, async (req: Request, res: Response) => {
   const user = (req as any).user;
-  const { poids, tour_de_taille, tour_de_hanches, masse_grasse, note, date } = req.body;
+  console.log('[POST metriques] Body reçu:', req.body);
+
+  const { poids, tour_de_taille, tour_de_hanches, energie, sommeil, note, date } = req.body;
 
   const { data: client } = await supabaseAdmin
     .from('clients')
-    .select('id, coach_id')
-    .eq('email', user.email)
+    .select('id')
+    .eq('user_id', user.id)
     .maybeSingle();
+
+  console.log('[POST metriques] Client trouvé:', client);
 
   if (!client) {
     res.status(404).json({ error: 'Client non trouvé' });
@@ -484,21 +525,25 @@ app.post('/client/metriques', authMiddleware, async (req: Request, res: Response
 
   const payload: Record<string, any> = {
     client_id: client.id,
-    coach_id: client.coach_id,
     date: date || new Date().toISOString().split('T')[0],
   };
 
-  if (poids != null && poids !== '')           payload.poids          = parseFloat(poids);
-  if (tour_de_taille != null && tour_de_taille !== '') payload.tour_de_taille = parseFloat(tour_de_taille);
+  if (poids != null && poids !== '')           payload.poids           = parseFloat(poids);
+  if (tour_de_taille != null && tour_de_taille !== '') payload.tour_de_taille  = parseFloat(tour_de_taille);
   if (tour_de_hanches != null && tour_de_hanches !== '') payload.tour_de_hanches = parseFloat(tour_de_hanches);
-  if (masse_grasse != null && masse_grasse !== '') payload.masse_grasse   = parseFloat(masse_grasse);
-  if (note)                                    payload.note           = note;
+  if (energie != null && energie !== '')       payload.energie         = parseFloat(energie);
+  if (sommeil != null && sommeil !== '')       payload.sommeil         = parseFloat(sommeil);
+  if (note)                                    payload.note            = note;
+
+  console.log('[POST metriques] Payload insert:', payload);
 
   const { data, error } = await supabaseAdmin
     .from('metriques')
     .insert(payload)
     .select()
     .single();
+
+  console.log('[POST metriques] Insert result — data:', data, '| error:', error);
 
   if (error) {
     console.error('[client/metriques POST]', error.message);

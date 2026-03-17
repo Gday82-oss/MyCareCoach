@@ -145,7 +145,7 @@ function CustomTooltip({ active, payload, label }: any) {
   return (
     <div className="bg-white dark:bg-[#1A2535] border border-gray-100 dark:border-[#2E3D55] shadow-lg rounded-lg px-3 py-2 text-sm">
       <p className="text-gray-500 dark:text-[#8896A8] mb-1">{label}</p>
-      <p className="font-semibold text-emerald-600">
+      <p className="font-semibold text-[#00C896]">
         {payload[0].value} séance{payload[0].value !== 1 ? 's' : ''}
       </p>
     </div>
@@ -429,7 +429,7 @@ export default function Dashboard() {
         <button
           onClick={() => fetchDashboardData(true)}
           disabled={refreshing}
-          className="flex items-center gap-2 text-sm text-gray-500 dark:text-[#8896A8] hover:text-emerald-600 bg-white dark:bg-[#1A2535] border border-gray-200 dark:border-[#2E3D55] px-3 py-2 rounded-lg hover:border-emerald-300 transition-colors disabled:opacity-50"
+          className="flex items-center gap-2 text-sm text-gray-500 dark:text-[#8896A8] hover:text-[#00C896] bg-white dark:bg-[#1A2535] border border-gray-200 dark:border-[#2E3D55] px-3 py-2 rounded-lg hover:border-[#00C896]/40 transition-colors disabled:opacity-50"
           title="Rafraîchir les données"
         >
           <RefreshCw size={15} className={refreshing ? 'animate-spin' : ''} />
@@ -447,8 +447,8 @@ export default function Dashboard() {
           className="bg-white dark:bg-[#1A2535] rounded-xl shadow-sm p-6 border border-gray-100 dark:border-[#2E3D55] hover:shadow-md transition-shadow"
         >
           <div className="flex items-center justify-between mb-3">
-            <div className="w-11 h-11 bg-emerald-100 rounded-xl flex items-center justify-center">
-              <Users className="text-emerald-600" size={22} />
+            <div className="w-11 h-11 bg-[#00C896]/15 rounded-xl flex items-center justify-center">
+              <Users className="text-[#00C896]" size={22} />
             </div>
             <span className="text-xs text-gray-400 dark:text-[#6B7A8D] font-medium uppercase tracking-wide">Clients</span>
           </div>
@@ -528,17 +528,17 @@ export default function Dashboard() {
         >
           <div className="p-6 border-b border-gray-100 dark:border-[#2E3D55] flex items-center justify-between">
             <h2 className="text-lg font-semibold text-gray-800 dark:text-[#E8EDF5] flex items-center gap-2">
-              <Clock size={20} className="text-emerald-500" />
+              <Clock size={20} className="text-[#00C896]" />
               Séances d'aujourd'hui
               {seancesJour.length > 0 && (
-                <span className="ml-1 text-xs font-medium bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
+                <span className="ml-1 text-xs font-medium bg-[#00C896]/15 text-[#00B080] px-2 py-0.5 rounded-full">
                   {seancesJour.length}
                 </span>
               )}
             </h2>
             <button
               onClick={() => navigate('/app/seances')}
-              className="text-sm text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
+              className="text-sm text-[#00C896] hover:text-[#00B080] flex items-center gap-1"
             >
               Voir tout <ChevronRight size={14} />
             </button>
@@ -553,7 +553,7 @@ export default function Dashboard() {
                 <p className="text-sm text-gray-400 dark:text-[#6B7A8D] mt-1">Aucune séance planifiée</p>
                 <button
                   onClick={() => navigate('/app/seances')}
-                  className="mt-4 inline-flex items-center gap-2 text-sm bg-emerald-50 text-emerald-700 px-4 py-2 rounded-lg hover:bg-emerald-100 transition-colors"
+                  className="mt-4 inline-flex items-center gap-2 text-sm bg-[#00C896]/10 text-[#00B080] px-4 py-2 rounded-lg hover:bg-[#00C896]/15 transition-colors"
                 >
                   <Plus size={16} /> Planifier une séance
                 </button>
@@ -566,7 +566,7 @@ export default function Dashboard() {
                     className="flex items-center justify-between p-4 bg-gray-50 dark:bg-[#0F1923] rounded-xl hover:bg-gray-100 dark:bg-[#243044] transition-colors"
                   >
                     <div className="flex items-center gap-4">
-                      <div className={`w-1.5 h-10 rounded-full ${seance.fait ? 'bg-green-400' : 'bg-emerald-500'}`} />
+                      <div className={`w-1.5 h-10 rounded-full ${seance.fait ? 'bg-green-400' : 'bg-[#00C896]'}`} />
                       <div>
                         <p className="font-semibold text-gray-800 dark:text-[#E8EDF5]">
                           {seance.client
@@ -613,10 +613,10 @@ export default function Dashboard() {
                 {activites.map((a) => (
                   <div key={a.id} className="flex items-start gap-3">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      a.type === 'client_ajoute' ? 'bg-emerald-100' : 'bg-blue-100'
+                      a.type === 'client_ajoute' ? 'bg-[#00C896]/15' : 'bg-blue-100'
                     }`}>
                       {a.type === 'client_ajoute'
-                        ? <UserPlus size={14} className="text-emerald-600" />
+                        ? <UserPlus size={14} className="text-[#00C896]" />
                         : <CalendarCheck size={14} className="text-blue-600" />
                       }
                     </div>
@@ -641,12 +641,12 @@ export default function Dashboard() {
       >
         <div className="p-6 border-b border-gray-100 dark:border-[#2E3D55] flex items-center justify-between">
           <h2 className="text-lg font-semibold text-gray-800 dark:text-[#E8EDF5] flex items-center gap-2">
-            <Heart size={20} className="text-emerald-500" />
+            <Heart size={20} className="text-[#00C896]" />
             Clients récents
           </h2>
           <button
             onClick={() => navigate('/app/clients')}
-            className="text-sm text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
+            className="text-sm text-[#00C896] hover:text-[#00B080] flex items-center gap-1"
           >
             Voir tous <ChevronRight size={14} />
           </button>
@@ -661,7 +661,7 @@ export default function Dashboard() {
               <p className="text-sm text-gray-400 dark:text-[#6B7A8D] mt-1">Commencez par ajouter votre premier client</p>
               <button
                 onClick={() => navigate('/app/clients')}
-                className="mt-4 inline-flex items-center gap-2 bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition-colors text-sm"
+                className="mt-4 inline-flex items-center gap-2 bg-[#00C896] text-white px-4 py-2 rounded-lg hover:bg-[#00B080] transition-colors text-sm"
               >
                 <Plus size={16} /> Ajouter un client
               </button>
@@ -671,10 +671,10 @@ export default function Dashboard() {
               {clientsRecents.map((client) => (
                 <div
                   key={client.id}
-                  className="flex flex-col items-center text-center p-4 bg-gray-50 dark:bg-[#0F1923] rounded-xl hover:bg-emerald-50 hover:border-emerald-200 border border-transparent transition-all cursor-pointer"
+                  className="flex flex-col items-center text-center p-4 bg-gray-50 dark:bg-[#0F1923] rounded-xl hover:bg-[#00C896]/10 hover:border-[#00C896]/30 border border-transparent transition-all cursor-pointer"
                   onClick={() => navigate('/app/clients')}
                 >
-                  <div className="w-14 h-14 bg-gradient-to-br from-emerald-400 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-lg mb-3 shadow-sm">
+                  <div className="w-14 h-14 bg-gradient-to-br from-[#00C896] to-[#00CEC9] rounded-full flex items-center justify-center text-white font-semibold text-lg mb-3 shadow-sm">
                     {client.prenom?.[0]?.toUpperCase()}
                     {client.nom?.[0]?.toUpperCase()}
                   </div>
@@ -760,7 +760,7 @@ export default function Dashboard() {
       >
         <button
           onClick={() => navigate('/app/clients')}
-          className="flex items-center gap-2 bg-emerald-500 text-white px-6 py-3 rounded-xl hover:bg-emerald-600 transition-colors shadow-lg shadow-emerald-500/25 font-medium"
+          className="flex items-center gap-2 bg-[#00C896] text-white px-6 py-3 rounded-xl hover:bg-[#00B080] transition-colors shadow-lg shadow-[#00C896]/25 font-medium"
         >
           <Plus size={20} />
           Nouveau client

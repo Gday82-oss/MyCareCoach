@@ -119,7 +119,7 @@ export default function Paiements() {
   }
 
   const getStatutColor = (s: string) => ({
-    payee: 'bg-emerald-100 text-emerald-700',
+    payee: 'bg-[#00C896]/15 text-[#00B080]',
     envoyee: 'bg-blue-100 text-blue-700',
     brouillon: 'bg-gray-100 text-gray-700',
     retard: 'bg-red-100 text-red-700',
@@ -127,12 +127,12 @@ export default function Paiements() {
   }[s] || 'bg-gray-100');
 
   const getStatutIcon = (s: string) => {
-    if (s === 'payee') return <CheckCircle size={16} className="text-emerald-600" />;
+    if (s === 'payee') return <CheckCircle size={16} className="text-[#00C896]" />;
     if (s === 'retard') return <AlertCircle size={16} className="text-red-600" />;
     return <Clock size={16} className="text-blue-600" />;
   };
 
-  if (loading) return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500" /></div>;
+  if (loading) return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00C896]" /></div>;
 
   return (
     <div className="p-8">
@@ -142,7 +142,7 @@ export default function Paiements() {
           <h1 className="text-3xl font-bold text-gray-800">Factures</h1>
           <p className="text-gray-600 mt-1">Gestion des paiements - Chèque, Espèces, Virement</p>
         </div>
-        <button onClick={() => setShowAddModal(true)} className="flex items-center gap-2 bg-emerald-500 text-white px-6 py-3 rounded-xl hover:bg-emerald-600 shadow-lg shadow-emerald-500/25">
+        <button onClick={() => setShowAddModal(true)} className="flex items-center gap-2 bg-[#00C896] text-white px-6 py-3 rounded-xl hover:bg-[#00B080] shadow-lg shadow-[#00C896]/25">
           <Plus size={20} /> Nouvelle facture
         </button>
       </div>
@@ -153,9 +153,9 @@ export default function Paiements() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-500">Encaissé</p>
-              <p className="text-2xl font-bold text-emerald-600">{stats.paye.toFixed(2)}€</p>
+              <p className="text-2xl font-bold text-[#00C896]">{stats.paye.toFixed(2)}€</p>
             </div>
-            <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center"><TrendingUp className="text-emerald-600" size={24} /></div>
+            <div className="w-12 h-12 bg-[#00C896]/15 rounded-lg flex items-center justify-center"><TrendingUp className="text-[#00C896]" size={24} /></div>
           </div>
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-white rounded-xl shadow-sm p-6">
@@ -191,9 +191,9 @@ export default function Paiements() {
       <div className="flex flex-col md:flex-row gap-4 mb-6">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-          <input type="text" placeholder="Rechercher..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500" />
+          <input type="text" placeholder="Rechercher..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#00C896]" />
         </div>
-        <select value={filterStatut} onChange={(e) => setFilterStatut(e.target.value)} className="px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500">
+        <select value={filterStatut} onChange={(e) => setFilterStatut(e.target.value)} className="px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#00C896]">
           <option value="tous">Tous les statuts</option>
           <option value="brouillon">Brouillon</option>
           <option value="envoyee">Envoyée</option>
@@ -255,23 +255,23 @@ export default function Paiements() {
             <form onSubmit={createFacture} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Client *</label>
-                <select required value={clientId} onChange={(e) => setClientId(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500">
+                <select required value={clientId} onChange={(e) => setClientId(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00C896]">
                   <option value="">Sélectionner un client</option>
                   {clients.map(c => <option key={c.id} value={c.id}>{c.prenom} {c.nom}</option>)}
                 </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Séances de sport-santé..." className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500" />
+                <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Séances de sport-santé..." className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00C896]" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Montant HT (€) *</label>
-                  <input type="number" step="0.01" required value={montant} onChange={(e) => setMontant(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500" />
+                  <input type="number" step="0.01" required value={montant} onChange={(e) => setMontant(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00C896]" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">TVA (%)</label>
-                  <select value={tva} onChange={(e) => setTva(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500">
+                  <select value={tva} onChange={(e) => setTva(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00C896]">
                     <option value="0">0%</option>
                     <option value="10">10%</option>
                     <option value="20">20%</option>
@@ -280,7 +280,7 @@ export default function Paiements() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Date d'échéance</label>
-                <input type="date" value={dateEcheance} onChange={(e) => setDateEcheance(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500" />
+                <input type="date" value={dateEcheance} onChange={(e) => setDateEcheance(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00C896]" />
               </div>
               <div className="bg-gray-50 p-4 rounded-lg">
                 <div className="flex justify-between text-sm">
@@ -293,12 +293,12 @@ export default function Paiements() {
                 </div>
                 <div className="flex justify-between font-bold text-lg pt-2 border-t">
                   <span>Total TTC:</span>
-                  <span className="text-emerald-600">{montant ? (parseFloat(montant) * (1 + parseFloat(tva) / 100)).toFixed(2) : '0.00'}€</span>
+                  <span className="text-[#00C896]">{montant ? (parseFloat(montant) * (1 + parseFloat(tva) / 100)).toFixed(2) : '0.00'}€</span>
                 </div>
               </div>
               <div className="flex gap-3 pt-4">
                 <button type="button" onClick={() => setShowAddModal(false)} className="flex-1 py-3 border border-gray-300 rounded-xl hover:bg-gray-50">Annuler</button>
-                <button type="submit" className="flex-1 py-3 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600">Créer la facture</button>
+                <button type="submit" className="flex-1 py-3 bg-[#00C896] text-white rounded-xl hover:bg-[#00B080]">Créer la facture</button>
               </div>
             </form>
           </motion.div>

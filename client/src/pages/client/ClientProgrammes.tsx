@@ -56,7 +56,7 @@ export default function ClientProgrammes({ client }: ClientProgrammesProps) {
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div></div>;
+    return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#6C5CE7]"></div></div>;
   }
 
   return (
@@ -87,7 +87,7 @@ export default function ClientProgrammes({ client }: ClientProgrammesProps) {
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-emerald-400 to-blue-500 rounded-xl flex items-center justify-center">
+                  <div className="w-14 h-14 bg-gradient-to-br from-[#6C5CE7] to-[#A29BFE] rounded-xl flex items-center justify-center">
                     <FileText className="text-white" size={28} />
                   </div>
                   
@@ -153,7 +153,7 @@ export default function ClientProgrammes({ client }: ClientProgrammesProps) {
 
             <button 
               onClick={() => setSelectedProgramme(null)}
-              className="w-full mt-6 py-3 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600"
+              className="w-full mt-6 py-3 bg-[#6C5CE7] text-white rounded-xl hover:bg-[#5a4bd1]"
             >
               Fermer
             </button>

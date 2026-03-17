@@ -40,9 +40,9 @@ const features = [
   { icon: Users,           title: 'Gestion Clients',   description: 'Fiches complètes, historique, objectifs, notes et suivi personnalisé de chaque client.',        color: '#00C896', bg: '#E6FAF5' },
   { icon: Calendar,        title: 'Planification',     description: 'Calendrier intégré pour planifier, reprogrammer et confirmer vos séances sans friction.',        color: '#0EA5E9', bg: '#E0F2FE' },
   { icon: Dumbbell,        title: 'Programmes',        description: "Créez des programmes d'entraînement personnalisés, exportez en PDF, partagez en un clic.",       color: '#F97316', bg: '#FFF7ED' },
-  { icon: Activity,        title: 'Métriques',         description: "Suivez les progrès de chaque client : poids, VO₂max, performances et courbes d'évolution.",      color: '#EF4444', bg: '#FEF2F2' },
-  { icon: FileText,        title: 'Facturation',       description: 'Factures professionnelles, attestations mutuelle et suivi des paiements en quelques secondes.', color: '#8B5CF6', bg: '#F5F3FF' },
-  { icon: Brain,           title: 'Assistant IA',      description: "Génère des programmes personnalisés en secondes. Recommandations basées sur les données OMS et le profil de chaque client.", color: '#8B5CF6', bg: '#F5F3FF', badge: 'Pro & Business' },
+  { icon: Activity,        title: 'Métriques',         description: "Suivez la progression de chaque client : poids, mensurations, IMC, énergie et courbes d'évolution.",  color: '#EF4444', bg: '#FEF2F2' },
+  { icon: FileText,        title: 'Facturation',       description: 'Factures professionnelles, attestations mutuelle et suivi des paiements en quelques secondes.',  color: '#8B5CF6', bg: '#F5F3FF' },
+  { icon: Brain,           title: 'Assistant IA',      description: "Génère des programmes personnalisés et des recommandations basées sur les données OMS et le profil de chaque client.", color: '#8B5CF6', bg: '#F5F3FF', badge: 'Pro & Business' },
 ];
 
 const testimonials = [
@@ -344,9 +344,19 @@ function Features() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map(({ icon: Icon, title, description, color, bg, badge }, i) => (
-            <FeatureCard key={title} icon={Icon} title={title} description={description} color={color} bg={bg} badge={badge} delay={i * 80} />
-          ))}
+          {features.map(({ icon: Icon, title, description, color, bg, badge }, i) => {
+            const isLast = i === features.length - 1 && features.length % 3 !== 0;
+            if (isLast) {
+              return (
+                <div key={title} className="sm:col-span-2 lg:col-span-3 flex justify-center">
+                  <div className="w-full sm:max-w-[calc(50%-12px)] lg:max-w-[calc(33.333%-16px)]">
+                    <FeatureCard icon={Icon} title={title} description={description} color={color} bg={bg} badge={badge} delay={i * 80} />
+                  </div>
+                </div>
+              );
+            }
+            return <FeatureCard key={title} icon={Icon} title={title} description={description} color={color} bg={bg} badge={badge} delay={i * 80} />;
+          })}
         </div>
       </div>
     </section>
@@ -379,7 +389,7 @@ function FeatureCard({ icon: Icon, title, description, color, bg, badge, delay }
         <h3 className="font-display text-lg font-bold text-[#1A2B4A]">{title}</h3>
         {badge && (
           <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg, #8B5CF6, #6D28D9)' }}>
+            style={{ background: 'linear-gradient(135deg, #00C896, #00a87e)' }}>
             {badge}
           </span>
         )}

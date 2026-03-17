@@ -33,7 +33,7 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
     <button
       onClick={() => onChange(!checked)}
       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
-        checked ? 'bg-emerald-500' : 'bg-gray-200'
+        checked ? 'bg-[#00C896]' : 'bg-gray-200'
       }`}
     >
       <motion.span
@@ -54,7 +54,7 @@ function Toast({ msg, ok }: { msg: string; ok: boolean }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -12 }}
       className={`fixed top-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg text-sm font-medium ${
-        ok ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'
+        ok ? 'bg-[#00C896] text-white' : 'bg-red-500 text-white'
       }`}
     >
       {ok ? <Check size={16} /> : <AlertCircle size={16} />}
@@ -299,7 +299,7 @@ export default function Settings() {
                   className="w-20 h-20 rounded-full object-cover border-4 border-white shadow-md"
                 />
               ) : (
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-2xl font-bold shadow-md">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#00C896] to-[#00CEC9] flex items-center justify-center text-white text-2xl font-bold shadow-md">
                   {profile.prenom?.[0]?.toUpperCase() || profile.nom?.[0]?.toUpperCase() || '?'}
                 </div>
               )}
@@ -310,7 +310,7 @@ export default function Settings() {
                 title="Changer la photo"
               >
                 {uploadingPhoto
-                  ? <Loader2 size={14} className="animate-spin text-emerald-500" />
+                  ? <Loader2 size={14} className="animate-spin text-[#00C896]" />
                   : <Camera size={14} className="text-gray-600 dark:text-[#A8B4C4]" />
                 }
               </button>
@@ -329,7 +329,7 @@ export default function Settings() {
               <p className="text-sm text-gray-500 dark:text-[#8896A8]">{profile.email}</p>
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="text-xs text-emerald-600 hover:text-emerald-700 mt-1 font-medium"
+                className="text-xs text-[#00C896] hover:text-[#00B080] mt-1 font-medium"
               >
                 Changer la photo
               </button>
@@ -348,7 +348,7 @@ export default function Settings() {
                     value={profile.prenom}
                     onChange={e => setProfile(p => ({ ...p, prenom: e.target.value }))}
                     placeholder="Votre prénom"
-                    className="w-full pl-9 pr-3 py-2.5 border border-gray-200 dark:border-[#2E3D55] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400/30 focus:border-emerald-400 transition-all"
+                    className="w-full pl-9 pr-3 py-2.5 border border-gray-200 dark:border-[#2E3D55] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00C896]/30 focus:border-[#00C896] transition-all"
                   />
                 </div>
               </div>
@@ -361,7 +361,7 @@ export default function Settings() {
                     value={profile.nom}
                     onChange={e => setProfile(p => ({ ...p, nom: e.target.value }))}
                     placeholder="Votre nom"
-                    className="w-full pl-9 pr-3 py-2.5 border border-gray-200 dark:border-[#2E3D55] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400/30 focus:border-emerald-400 transition-all"
+                    className="w-full pl-9 pr-3 py-2.5 border border-gray-200 dark:border-[#2E3D55] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00C896]/30 focus:border-[#00C896] transition-all"
                   />
                 </div>
               </div>
@@ -390,7 +390,7 @@ export default function Settings() {
                   value={profile.telephone}
                   onChange={e => setProfile(p => ({ ...p, telephone: e.target.value }))}
                   placeholder="06 00 00 00 00"
-                  className="w-full pl-9 pr-3 py-2.5 border border-gray-200 dark:border-[#2E3D55] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400/30 focus:border-emerald-400 transition-all"
+                  className="w-full pl-9 pr-3 py-2.5 border border-gray-200 dark:border-[#2E3D55] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00C896]/30 focus:border-[#00C896] transition-all"
                 />
               </div>
             </div>
@@ -404,7 +404,7 @@ export default function Settings() {
                   value={profile.specialite}
                   onChange={e => setProfile(p => ({ ...p, specialite: e.target.value }))}
                   placeholder="Ex : Coach fitness, Préparateur physique..."
-                  className="w-full pl-9 pr-3 py-2.5 border border-gray-200 dark:border-[#2E3D55] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400/30 focus:border-emerald-400 transition-all"
+                  className="w-full pl-9 pr-3 py-2.5 border border-gray-200 dark:border-[#2E3D55] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00C896]/30 focus:border-[#00C896] transition-all"
                 />
               </div>
             </div>
@@ -419,7 +419,7 @@ export default function Settings() {
                   placeholder="Quelques mots sur vous..."
                   rows={3}
                   maxLength={300}
-                  className="w-full pl-9 pr-3 py-2.5 border border-gray-200 dark:border-[#2E3D55] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400/30 focus:border-emerald-400 transition-all resize-none"
+                  className="w-full pl-9 pr-3 py-2.5 border border-gray-200 dark:border-[#2E3D55] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00C896]/30 focus:border-[#00C896] transition-all resize-none"
                 />
               </div>
               <p className="text-xs text-gray-400 dark:text-[#6B7A8D] mt-1 text-right">{profile.bio.length}/300</p>
@@ -428,7 +428,7 @@ export default function Settings() {
             <button
               onClick={saveProfile}
               disabled={savingProfile}
-              className="w-full flex items-center justify-center gap-2 bg-emerald-500 text-white py-3 rounded-xl font-medium hover:bg-emerald-600 transition-colors disabled:opacity-60"
+              className="w-full flex items-center justify-center gap-2 bg-[#00C896] text-white py-3 rounded-xl font-medium hover:bg-[#00B080] transition-colors disabled:opacity-60"
             >
               {savingProfile
                 ? <><Loader2 size={16} className="animate-spin" /> Enregistrement...</>
@@ -491,7 +491,7 @@ export default function Settings() {
             <button
               onClick={saveNotifs}
               disabled={savingNotifs}
-              className="w-full flex items-center justify-center gap-2 bg-emerald-500 text-white py-3 rounded-xl font-medium hover:bg-emerald-600 transition-colors disabled:opacity-60"
+              className="w-full flex items-center justify-center gap-2 bg-[#00C896] text-white py-3 rounded-xl font-medium hover:bg-[#00B080] transition-colors disabled:opacity-60"
             >
               {savingNotifs
                 ? <><Loader2 size={16} className="animate-spin" /> Enregistrement...</>
@@ -513,7 +513,7 @@ export default function Settings() {
           <div className="bg-white dark:bg-[#1A2535] rounded-2xl border border-gray-100 dark:border-[#2E3D55] shadow-sm overflow-hidden">
             <div className="p-6 border-b border-gray-100 dark:border-[#2E3D55]">
               <h2 className="font-semibold text-gray-800 dark:text-[#E8EDF5] flex items-center gap-2">
-                <Lock size={18} className="text-emerald-500" />
+                <Lock size={18} className="text-[#00C896]" />
                 Changer de mot de passe
               </h2>
               <p className="text-sm text-gray-400 dark:text-[#6B7A8D] mt-1">
@@ -522,11 +522,11 @@ export default function Settings() {
             </div>
             <div className="p-6">
               {resetSent ? (
-                <div className="flex items-center gap-3 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
-                  <Check size={20} className="text-emerald-500 flex-shrink-0" />
+                <div className="flex items-center gap-3 p-4 bg-[#00C896]/10 rounded-xl border border-[#00C896]/20">
+                  <Check size={20} className="text-[#00C896] flex-shrink-0" />
                   <div>
-                    <p className="text-sm font-medium text-emerald-800">Email envoyé !</p>
-                    <p className="text-xs text-emerald-600 mt-0.5">
+                    <p className="text-sm font-medium text-[#00C896]">Email envoyé !</p>
+                    <p className="text-xs text-[#00C896] mt-0.5">
                       Vérifiez votre boîte mail et cliquez sur le lien pour créer votre nouveau mot de passe.
                     </p>
                   </div>
@@ -558,13 +558,13 @@ export default function Settings() {
               </p>
             </div>
             <div className="p-6 space-y-3">
-              <div className="flex items-center gap-3 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0" />
+              <div className="flex items-center gap-3 p-4 bg-[#00C896]/10 rounded-xl border border-[#00C896]/20">
+                <div className="w-2 h-2 rounded-full bg-[#00C896] flex-shrink-0" />
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-800 dark:text-[#E8EDF5]">Session actuelle</p>
                   <p className="text-xs text-gray-500 dark:text-[#8896A8]">Navigateur web · Connecté maintenant</p>
                 </div>
-                <span className="text-xs text-emerald-600 font-medium bg-emerald-100 px-2 py-0.5 rounded-full">
+                <span className="text-xs text-[#00C896] font-medium bg-[#00C896]/15 px-2 py-0.5 rounded-full">
                   Actif
                 </span>
               </div>

@@ -139,7 +139,7 @@ export default function CoachApp() {
     <img
       src={coach.photo_url}
       alt="Avatar"
-      className="w-9 h-9 rounded-full object-cover border-2 border-emerald-400 flex-shrink-0"
+      className="w-9 h-9 rounded-full object-cover border-2 border-[#00C896] flex-shrink-0"
     />
   ) : (
     <div

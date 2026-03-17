@@ -14,6 +14,7 @@ interface ClientProfile {
   nom: string;
   email: string;
   coach_id: string;
+  taille?: number;
 }
 
 export default function ClientPortal() {
@@ -70,7 +71,7 @@ export default function ClientPortal() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00C896]"></div>
       </div>
     );
   }
@@ -109,7 +110,7 @@ export default function ClientPortal() {
           >
             <div className="p-6">
               <div className="flex items-center gap-3 mb-8">
-                <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+                <div className="w-10 h-10 bg-gradient-to-br from-[#00C896] to-[#00CEC9] rounded-full flex items-center justify-center text-white font-bold">
                   {client.prenom[0]}{client.nom[0]}
                 </div>
                 <div>

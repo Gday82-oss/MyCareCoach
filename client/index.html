@@ -8,42 +8,48 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/icon-192x192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
     
-    <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#00C896" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#00C896" media="(prefers-color-scheme: dark)" />
+    <!-- PWA Meta Tags — valeurs par défaut (client /client) -->
+    <meta name="theme-color" content="#6C5CE7" id="pwa-theme-color" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="MyCareCoach" />
+    <meta name="apple-mobile-web-app-title" content="MyCareCoach Client" id="pwa-app-title" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="application-name" content="MyCareCoach" />
+    <meta name="application-name" content="MyCareCoach Client" id="pwa-app-name" />
     <meta name="format-detection" content="telephone=no" />
-    
-    <!-- PWA Manifest — dynamique : coach (/app) vs client (/client) -->
+
+    <!-- PWA Manifest — dynamique selon URL -->
     <link rel="manifest" href="/manifest.json" id="pwa-manifest" />
+
+    <!-- Apple Touch Icons — dynamiques selon URL -->
+    <link rel="apple-touch-icon" href="/icons/icon-client-180.png" id="apple-touch-icon-default" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-client-180.png" id="apple-touch-icon-180" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-client-192.png" id="apple-touch-icon-152" />
+    <link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-client-192.png" id="apple-touch-icon-167" />
+
     <script>
       (function() {
-        if (window.location.pathname.startsWith('/app')) {
-          document.getElementById('pwa-manifest').href = '/manifest-coach.json';
-          // Theme color coach (bleu marine)
-          document.querySelectorAll('meta[name="theme-color"]').forEach(function(m) {
-            m.content = '#1A2B4A';
-          });
+        var path = window.location.pathname;
+        if (path.startsWith('/app')) {
+          // ── Espace Coach ──
+          document.getElementById('pwa-manifest').href    = '/manifest-coach.json';
+          document.getElementById('pwa-theme-color').content = '#1A2B4A';
+          document.getElementById('pwa-app-title').content   = 'MyCareCoach Coach';
+          document.getElementById('pwa-app-name').content    = 'MyCareCoach Coach';
+          document.getElementById('apple-touch-icon-default').href = '/icons/icon-180.png';
+          document.getElementById('apple-touch-icon-180').href     = '/icons/icon-180.png';
+          document.getElementById('apple-touch-icon-152').href     = '/icons/icon-192.png';
+          document.getElementById('apple-touch-icon-167').href     = '/icons/icon-192.png';
         }
+        // /client/* → valeurs par défaut déjà définies (violet, icônes client)
       })();
     </script>
 
-    <!-- Apple Touch Icons -->
-    <link rel="apple-touch-icon" href="/icons/icon-180.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-180.png" />
-    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-192.png" />
-    <link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-192.png" />
-
     <!-- Splash Screens for iOS -->
-    <link rel="apple-touch-startup-image" href="/icon-512x512.png" />
+    <link rel="apple-touch-startup-image" href="/icons/icon-client-512.png" id="splash-screen" />
 
     <!-- Microsoft -->
-    <meta name="msapplication-TileColor" content="#00C896" />
-    <meta name="msapplication-TileImage" content="/icon-192x192.png" />
+    <meta name="msapplication-TileColor" content="#6C5CE7" />
+    <meta name="msapplication-TileImage" content="/icons/icon-client-192.png" />
 
     <!-- SEO -->
     <title>MyCareCoach - Votre compagnon sport-santé</title>
@@ -67,7 +73,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     
     <!-- Preload critical assets -->
-    <link rel="preload" as="image" href="/icon-192x192.png" />
+    <link rel="preload" as="image" href="/icons/icon-client-192.png" />
   </head>
   <body>
     <div id="root"></div>

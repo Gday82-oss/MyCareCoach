@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabaseClient as supabase } from '../../lib/supabase';
 import { motion } from 'framer-motion';
 import { Heart, LogIn } from 'lucide-react';
+import InstallBannerClient from '../../components/InstallBannerClient';
 
 const GoogleIcon = () => (
   <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true">
@@ -94,112 +95,118 @@ export default function ClientLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F0FAF7] flex flex-col items-center justify-center p-6">
-      {/* Logo */}
-      <motion.div
-        initial={{ y: -30, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ type: 'spring' as const, stiffness: 300, damping: 25 }}
-        className="flex flex-col items-center mb-10"
-      >
-        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#00C896] to-[#00E5FF] flex items-center justify-center shadow-xl shadow-[#00C896]/30 mb-4">
-          <Heart className="text-white" size={40} fill="white" />
-        </div>
-        <h1 className="text-2xl font-bold text-gray-800">MyCareCoach</h1>
-        <p className="text-[#00C896] font-medium text-sm mt-1">Votre santé en mouvement</p>
-      </motion.div>
+    <>
+      <div className="min-h-screen bg-[#F4F0FE] flex flex-col items-center justify-center p-6">
+        {/* Logo */}
+        <motion.div
+          initial={{ y: -30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ type: 'spring' as const, stiffness: 300, damping: 25 }}
+          className="flex flex-col items-center mb-10"
+        >
+          <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#6C5CE7] to-[#8B7CF6] flex items-center justify-center shadow-xl shadow-[#6C5CE7]/30 mb-4">
+            <Heart className="text-white" size={40} fill="white" />
+          </div>
+          <h1 className="text-2xl font-bold text-gray-800">MyCareCoach</h1>
+          <p className="text-[#6C5CE7] font-medium text-sm mt-1">Votre santé en mouvement</p>
+        </motion.div>
 
-      {/* Carte de connexion */}
-      <motion.div
-        initial={{ y: 30, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ type: 'spring' as const, stiffness: 300, damping: 25, delay: 0.1 }}
-        className="w-full max-w-sm bg-white rounded-3xl shadow-xl shadow-black/5 p-8"
-      >
-        <h2 className="text-xl font-bold text-gray-800 mb-1">Mon espace personnel</h2>
-        <p className="text-gray-500 text-sm mb-6">Connectez-vous pour accéder à votre suivi</p>
+        {/* Carte de connexion */}
+        <motion.div
+          initial={{ y: 30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ type: 'spring' as const, stiffness: 300, damping: 25, delay: 0.1 }}
+          className="w-full max-w-sm bg-white rounded-3xl shadow-xl shadow-black/5 p-8"
+        >
+          <h2 className="text-xl font-bold text-gray-800 mb-1">Mon espace personnel</h2>
+          <p className="text-gray-500 text-sm mb-6">Connectez-vous pour accéder à votre suivi</p>
 
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-red-50 border border-red-100 text-red-600 p-3 rounded-2xl mb-4 text-sm"
-          >
-            {error}
-          </motion.div>
-        )}
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-red-50 border border-red-100 text-red-600 p-3 rounded-2xl mb-4 text-sm"
+            >
+              {error}
+            </motion.div>
+          )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-              Adresse email
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="votre@email.com"
-              className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-[#00C896] focus:border-transparent outline-none text-gray-800 bg-gray-50 transition-all"
-              required
-              autoComplete="email"
-            />
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                Adresse email
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="votre@email.com"
+                className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-[#6C5CE7] focus:border-transparent outline-none text-gray-800 bg-gray-50 transition-all"
+                required
+                autoComplete="email"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                Mot de passe
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-[#6C5CE7] focus:border-transparent outline-none text-gray-800 bg-gray-50 transition-all"
+                required
+                autoComplete="current-password"
+              />
+            </div>
+
+            <button
+              type="button"
+              disabled={loading}
+              onClick={doLogin}
+              className="w-full text-white py-3.5 rounded-2xl font-semibold flex items-center justify-center gap-2 shadow-lg shadow-[#6C5CE7]/30 disabled:opacity-60 disabled:cursor-not-allowed mt-2 transition-opacity hover:opacity-90"
+              style={{ background: '#6C5CE7' }}
+            >
+              {loading ? (
+                <div className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+              ) : (
+                <>
+                  <LogIn size={20} />
+                  Se connecter
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Séparateur */}
+          <div className="flex items-center gap-3 my-5">
+            <div className="flex-1 border-t border-gray-200" />
+            <span className="text-xs text-gray-400 font-medium">— ou —</span>
+            <div className="flex-1 border-t border-gray-200" />
           </div>
 
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-              Mot de passe
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-[#00C896] focus:border-transparent outline-none text-gray-800 bg-gray-50 transition-all"
-              required
-              autoComplete="current-password"
-            />
-          </div>
-
+          {/* Bouton Google */}
           <button
             type="button"
+            onClick={handleGoogleLogin}
             disabled={loading}
-            onClick={doLogin}
-            className="w-full bg-[#00C896] text-white py-3.5 rounded-2xl font-semibold flex items-center justify-center gap-2 shadow-lg shadow-[#00C896]/30 disabled:opacity-60 disabled:cursor-not-allowed mt-2 transition-opacity hover:opacity-90"
+            className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 rounded-2xl py-3.5 px-4 text-gray-700 font-semibold hover:bg-gray-50 transition-colors disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
           >
-            {loading ? (
-              <div className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-            ) : (
-              <>
-                <LogIn size={20} />
-                Se connecter
-              </>
-            )}
+            <GoogleIcon />
+            Continuer avec Google
           </button>
-        </form>
 
-        {/* Séparateur */}
-        <div className="flex items-center gap-3 my-5">
-          <div className="flex-1 border-t border-gray-200" />
-          <span className="text-xs text-gray-400 font-medium">— ou —</span>
-          <div className="flex-1 border-t border-gray-200" />
-        </div>
+          <p className="mt-6 text-center text-sm text-gray-400">
+            Première connexion ?{' '}
+            <span className="text-[#6C5CE7] font-medium">Contactez votre coach</span>
+          </p>
+        </motion.div>
+      </div>
 
-        {/* Bouton Google */}
-        <button
-          type="button"
-          onClick={handleGoogleLogin}
-          disabled={loading}
-          className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 rounded-2xl py-3.5 px-4 text-gray-700 font-semibold hover:bg-gray-50 transition-colors disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
-        >
-          <GoogleIcon />
-          Continuer avec Google
-        </button>
-
-        <p className="mt-6 text-center text-sm text-gray-400">
-          Premiere connexion ?{' '}
-          <span className="text-[#00C896] font-medium">Contactez votre coach</span>
-        </p>
-      </motion.div>
-    </div>
+      {/* Bannière installation PWA */}
+      <InstallBannerClient />
+    </>
   );
 }
