@@ -183,4 +183,4 @@ Les Pull Requests sont bienvenues. Merci de :
 
 ## Licence
 
-Ce projet est sous licence propriétaire. Tous droits réservés © 2025 MyCareCoach.
+Ce projet est sous licence propriétaire. Tous droits réservés © 2026 MyCareCoach.
