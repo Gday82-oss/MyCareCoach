@@ -48,18 +48,18 @@ export default function LandingHeader() {
 
         <div className="hidden md:flex items-center gap-2">
           <Link to="/login"
-            className="rounded-full font-medium cursor-pointer transition-opacity duration-200 hover:opacity-85"
-            style={{ background: 'linear-gradient(135deg, #1A2B4A, #2a4070)', color: 'white', border: 'none', borderRadius: '9999px', padding: '13px 40px', fontSize: '15px', fontWeight: 500, whiteSpace: 'nowrap', minWidth: '160px', textAlign: 'center' }}>
+            className="rounded-full font-medium cursor-pointer transition-colors duration-200 bg-[#00C896] hover:bg-[#00B080]"
+            style={{ color: 'white', border: 'none', borderRadius: '9999px', padding: '13px 40px', fontSize: '15px', fontWeight: 500, whiteSpace: 'nowrap', minWidth: '160px', textAlign: 'center' }}>
             Espace Coach
           </Link>
           <Link to="/client/login"
-            className="rounded-full font-medium cursor-pointer transition-opacity duration-200 hover:opacity-85"
-            style={{ background: 'linear-gradient(135deg, #00C896, #00a87e)', color: 'white', border: 'none', borderRadius: '9999px', padding: '13px 40px', fontSize: '15px', fontWeight: 500, whiteSpace: 'nowrap', minWidth: '160px', textAlign: 'center' }}>
+            className="rounded-full font-medium cursor-pointer transition-colors duration-200 bg-[#6C5CE7] hover:bg-[#4834D4]"
+            style={{ color: 'white', border: 'none', borderRadius: '9999px', padding: '13px 40px', fontSize: '15px', fontWeight: 500, whiteSpace: 'nowrap', minWidth: '160px', textAlign: 'center' }}>
             Espace Client
           </Link>
           <Link to="/register"
-            className="rounded-full font-medium cursor-pointer transition-opacity duration-200 hover:opacity-85"
-            style={{ background: 'linear-gradient(135deg, #00E5FF, #00C896)', color: '#1A2B4A', border: 'none', borderRadius: '9999px', padding: '12px 28px', fontSize: '15px', fontWeight: 500 }}>
+            className="rounded-full font-medium cursor-pointer transition-colors duration-200 bg-[#38BDF8] hover:bg-[#0EA5E9]"
+            style={{ color: 'white', border: 'none', borderRadius: '9999px', padding: '12px 28px', fontSize: '15px', fontWeight: 500 }}>
             S'inscrire
           </Link>
         </div>
@@ -86,18 +86,18 @@ export default function LandingHeader() {
           ))}
           <div className="pt-2 flex flex-col gap-2">
             <Link to="/login" onClick={() => setOpen(false)}
-              className="block text-center rounded-full font-medium cursor-pointer transition-opacity duration-200 hover:opacity-85"
-              style={{ background: 'linear-gradient(135deg, #1A2B4A, #2a4070)', color: 'white', border: 'none', borderRadius: '9999px', padding: '13px 40px', fontSize: '15px', fontWeight: 500, whiteSpace: 'nowrap' }}>
+              className="block text-center rounded-full font-medium cursor-pointer transition-colors duration-200 bg-[#00C896] hover:bg-[#00B080]"
+              style={{ color: 'white', border: 'none', borderRadius: '9999px', padding: '13px 40px', fontSize: '15px', fontWeight: 500, whiteSpace: 'nowrap' }}>
               Espace Coach
             </Link>
             <Link to="/client/login" onClick={() => setOpen(false)}
-              className="block text-center rounded-full font-medium cursor-pointer transition-opacity duration-200 hover:opacity-85"
-              style={{ background: 'linear-gradient(135deg, #00C896, #00a87e)', color: 'white', border: 'none', borderRadius: '9999px', padding: '13px 40px', fontSize: '15px', fontWeight: 500, whiteSpace: 'nowrap' }}>
+              className="block text-center rounded-full font-medium cursor-pointer transition-colors duration-200 bg-[#6C5CE7] hover:bg-[#4834D4]"
+              style={{ color: 'white', border: 'none', borderRadius: '9999px', padding: '13px 40px', fontSize: '15px', fontWeight: 500, whiteSpace: 'nowrap' }}>
               Espace Client
             </Link>
             <Link to="/register" onClick={() => setOpen(false)}
-              className="block text-center rounded-full font-medium cursor-pointer transition-opacity duration-200 hover:opacity-85"
-              style={{ background: 'linear-gradient(135deg, #00E5FF, #00C896)', color: '#1A2B4A', border: 'none', borderRadius: '9999px', padding: '12px 28px', fontSize: '15px', fontWeight: 500 }}>
+              className="block text-center rounded-full font-medium cursor-pointer transition-colors duration-200 bg-[#38BDF8] hover:bg-[#0EA5E9]"
+              style={{ color: 'white', border: 'none', borderRadius: '9999px', padding: '12px 28px', fontSize: '15px', fontWeight: 500 }}>
               S'inscrire gratuitement
             </Link>
           </div>

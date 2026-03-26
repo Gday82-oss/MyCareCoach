@@ -104,6 +104,9 @@ export default function ClientLogin() {
           transition={{ type: 'spring' as const, stiffness: 300, damping: 25 }}
           className="flex flex-col items-center mb-10"
         >
+          <div className="inline-block bg-[#F0EEFF] text-[#4834D4] border border-[#6C5CE7] rounded-full px-4 py-1 text-xs font-medium mb-4">
+            Espace Client
+          </div>
           <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#6C5CE7] to-[#8B7CF6] flex items-center justify-center shadow-xl shadow-[#6C5CE7]/30 mb-4">
             <Heart className="text-white" size={40} fill="white" />
           </div>

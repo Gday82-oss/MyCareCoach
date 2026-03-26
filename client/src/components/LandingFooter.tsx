@@ -76,7 +76,7 @@ export default function LandingFooter() {
         </div>
 
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-600">
-          <p>© 2025 MyCareCoach. Tous droits réservés.</p>
+          <p>© 2026 MyCareCoach. Tous droits réservés.</p>
           <p>Fait avec ♥ pour les coachs sportifs de France</p>
         </div>
       </div>

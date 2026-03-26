@@ -270,8 +270,7 @@ function Hero() {
             {/* Boutons */}
             <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start mb-12">
               <Link to="/register"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-white font-semibold text-base transition-all duration-200 hover:scale-105 hover:shadow-xl hover:shadow-[#00C896]/30"
-                style={{ background: 'linear-gradient(135deg, #00C896, #00E5FF)' }}>
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-white font-semibold text-base transition-all duration-200 bg-[#38BDF8] hover:bg-[#0EA5E9] hover:scale-105 hover:shadow-xl hover:shadow-[#38BDF8]/30">
                 Commencer gratuitement
                 <ArrowRight size={18} />
               </Link>

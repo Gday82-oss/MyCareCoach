@@ -118,7 +118,7 @@ export default function DemoModal({ onClose }: DemoModalProps) {
               <Link
                 to="/register"
                 onClick={onClose}
-                className="mt-2 inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-white font-semibold text-[#00C896] text-base hover:scale-105 transition-transform shadow-lg"
+                className="mt-2 inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-[#38BDF8] hover:bg-[#0EA5E9] font-semibold text-white text-base hover:scale-105 transition-all shadow-lg"
               >
                 Commencer gratuitement
               </Link>
