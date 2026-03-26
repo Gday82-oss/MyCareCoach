@@ -270,8 +270,7 @@ function Hero() {
             {/* Boutons */}
             <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start mb-12">
               <Link to="/register"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-white font-semibold text-base transition-all duration-200 hover:scale-105 hover:shadow-xl hover:shadow-[#00C896]/30"
-                style={{ background: 'linear-gradient(135deg, #00C896, #00E5FF)' }}>
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-white font-semibold text-base transition-all duration-200 hover:scale-105 hover:shadow-xl bg-[#38BDF8] hover:bg-[#0EA5E9]">
                 Commencer gratuitement
                 <ArrowRight size={18} />
               </Link>
@@ -578,12 +577,7 @@ function PricingCard({ name, price, period, description, groups, cta, ctaHref, h
       </div>
 
       <Link to={ctaHref}
-        className={`block w-full text-center py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 hover:scale-105 ${
-          highlighted
-            ? 'text-[#1A2B4A] hover:shadow-lg hover:shadow-[#00C896]/30'
-            : 'bg-white border-2 border-[#1A2B4A] text-[#1A2B4A] font-bold hover:bg-[#1A2B4A] hover:text-white'
-        }`}
-        style={highlighted ? { background: 'linear-gradient(135deg, #00C896, #00E5FF)' } : {}}
+        className="block w-full text-center py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 hover:scale-105 bg-[#38BDF8] hover:bg-[#0EA5E9] text-white hover:shadow-lg hover:shadow-[#38BDF8]/30"
       >
         {cta}
       </Link>

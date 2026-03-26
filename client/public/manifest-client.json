@@ -1,0 +1,27 @@
+{
+  "name": "MyCareCoach (Client)",
+  "short_name": "MyCareCoach",
+  "description": "Suivez vos programmes et séances de coaching",
+  "start_url": "/client/dashboard",
+  "scope": "/client/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#6C5CE7",
+  "theme_color": "#6C5CE7",
+  "icons": [
+    {
+      "src": "/icons/client-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/client-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["health", "fitness", "sports", "lifestyle"],
+  "lang": "fr"
+}

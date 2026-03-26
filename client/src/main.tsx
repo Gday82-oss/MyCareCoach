@@ -5,10 +5,22 @@ import ReactDOM from 'react-dom/client';
 if ('serviceWorker' in navigator && window.location.pathname.startsWith('/app')) {
   window.addEventListener('load', async () => {
     try {
-      const reg = await navigator.serviceWorker.register('/sw-coach.js')
+      const reg = await navigator.serviceWorker.register('/sw-coach.js', { scope: '/app/' })
       console.log('[PWA Coach] Service Worker enregistré:', reg.scope)
     } catch (err) {
       console.error('[PWA Coach] Erreur SW:', err)
+    }
+  })
+}
+
+// Enregistrement du Service Worker client (PWA /client/*)
+if ('serviceWorker' in navigator && window.location.pathname.startsWith('/client')) {
+  window.addEventListener('load', async () => {
+    try {
+      const reg = await navigator.serviceWorker.register('/sw-client.js', { scope: '/client/' })
+      console.log('[PWA Client] Service Worker enregistré:', reg.scope)
+    } catch (err) {
+      console.error('[PWA Client] Erreur SW:', err)
     }
   })
 }
