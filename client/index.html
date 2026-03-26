@@ -18,7 +18,7 @@
     <meta name="format-detection" content="telephone=no" />
 
     <!-- PWA Manifest — dynamique selon URL -->
-    <link rel="manifest" href="/manifest.json" id="pwa-manifest" />
+    <link rel="manifest" href="/manifest-client.json" id="pwa-manifest" />
 
     <!-- Apple Touch Icons — dynamiques selon URL -->
     <link rel="apple-touch-icon" href="/icons/icon-client-180.png" id="apple-touch-icon-default" />
@@ -31,7 +31,7 @@
         var path = window.location.pathname;
         if (path.startsWith('/app')) {
           // ── Espace Coach ──
-          document.getElementById('pwa-manifest').href    = '/manifest-coach.json';
+          document.getElementById('pwa-manifest').href       = '/manifest-coach.json';
           document.getElementById('pwa-theme-color').content = '#00C896';
           document.getElementById('pwa-app-title').content   = 'MyCareCoach Coach';
           document.getElementById('pwa-app-name').content    = 'MyCareCoach Coach';
@@ -41,9 +41,12 @@
           document.getElementById('apple-touch-icon-167').href     = '/icons/icon-192.png';
         } else if (path.startsWith('/client')) {
           // ── Espace Client ──
+          document.getElementById('pwa-manifest').href       = '/manifest-client.json';
           document.getElementById('pwa-theme-color').content = '#6C5CE7';
+          document.getElementById('pwa-app-title').content   = 'MyCareCoach Client';
+          document.getElementById('pwa-app-name').content    = 'MyCareCoach Client';
         }
-        // / et /login → valeurs par défaut (#00C896 vert)
+        // / et /login → manifest-client.json + #00C896 (valeurs par défaut)
       })();
     </script>
 

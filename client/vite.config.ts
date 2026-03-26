@@ -18,6 +18,27 @@ export default defineConfig({
         navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/api/],
         runtimeCaching: [
+          // Routes Coach — NetworkFirst pour avoir le contenu frais
+          {
+            urlPattern: /^\/app\/.*/,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'coach-routes',
+              expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          // Routes Client — NetworkFirst pour avoir le contenu frais
+          {
+            urlPattern: /^\/client\/.*/,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'client-routes',
+              expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          // Google Fonts
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: 'CacheFirst',
@@ -27,6 +48,7 @@ export default defineConfig({
               cacheableResponse: { statuses: [0, 200] },
             },
           },
+          // Supabase — NetworkFirst
           {
             urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
             handler: 'NetworkFirst',
