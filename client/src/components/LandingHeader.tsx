@@ -20,9 +20,61 @@ function scrollToId(id: string) {
   };
 }
 
+const BTN_BASE: React.CSSProperties = {
+  border: 'none',
+  borderRadius: '50px',
+  fontWeight: 600,
+  whiteSpace: 'nowrap',
+  textAlign: 'center',
+  transition: 'all 0.18s ease',
+  cursor: 'pointer',
+  display: 'inline-block',
+  textDecoration: 'none',
+  fontSize: '15px',
+};
+
 export default function LandingHeader() {
   const scrolled = useScrolled();
   const [open, setOpen] = useState(false);
+  const [hovered, setHovered] = useState<string | null>(null);
+
+  const coachStyle = (id: string): React.CSSProperties => ({
+    ...BTN_BASE,
+    background: 'linear-gradient(135deg, #00C896, #00A876)',
+    boxShadow: hovered === id
+      ? '0 6px 22px rgba(0,200,150,0.50), 0 2px 6px rgba(0,0,0,0.12)'
+      : '0 4px 16px rgba(0,200,150,0.38), 0 1px 4px rgba(0,0,0,0.10)',
+    color: '#fff',
+    transform: hovered === id ? 'translateY(-2px)' : 'none',
+    filter: hovered === id ? 'brightness(1.07)' : 'none',
+    padding: '13px 40px',
+    minWidth: '160px',
+  });
+
+  const clientStyle = (id: string): React.CSSProperties => ({
+    ...BTN_BASE,
+    background: 'linear-gradient(135deg, #6C5CE7, #4834D4)',
+    boxShadow: hovered === id
+      ? '0 6px 22px rgba(108,92,231,0.50), 0 2px 6px rgba(0,0,0,0.12)'
+      : '0 4px 16px rgba(108,92,231,0.38), 0 1px 4px rgba(0,0,0,0.10)',
+    color: '#fff',
+    transform: hovered === id ? 'translateY(-2px)' : 'none',
+    filter: hovered === id ? 'brightness(1.07)' : 'none',
+    padding: '13px 40px',
+    minWidth: '160px',
+  });
+
+  const registerStyle = (id: string): React.CSSProperties => ({
+    ...BTN_BASE,
+    background: 'linear-gradient(135deg, #0D7A6B, #0A9B72, #00C896)',
+    boxShadow: hovered === id
+      ? '0 6px 22px rgba(10,155,114,0.52), 0 2px 8px rgba(0,0,0,0.14)'
+      : '0 4px 16px rgba(10,155,114,0.40), 0 1px 4px rgba(0,0,0,0.12)',
+    color: '#fff',
+    transform: hovered === id ? 'translateY(-2px)' : 'none',
+    filter: hovered === id ? 'brightness(1.07)' : 'none',
+    padding: '12px 28px',
+  });
 
   return (
     <header
@@ -48,18 +100,21 @@ export default function LandingHeader() {
 
         <div className="hidden md:flex items-center gap-2">
           <Link to="/login"
-            className="rounded-full font-medium cursor-pointer transition-colors duration-200 bg-[#00C896] hover:bg-[#00B080]"
-            style={{ color: 'white', border: 'none', borderRadius: '9999px', padding: '13px 40px', fontSize: '15px', fontWeight: 500, whiteSpace: 'nowrap', minWidth: '160px', textAlign: 'center' }}>
+            style={coachStyle('coach-d')}
+            onMouseEnter={() => setHovered('coach-d')}
+            onMouseLeave={() => setHovered(null)}>
             Espace Coach
           </Link>
           <Link to="/client/login"
-            className="rounded-full font-medium cursor-pointer transition-colors duration-200 bg-[#6C5CE7] hover:bg-[#4834D4]"
-            style={{ color: 'white', border: 'none', borderRadius: '9999px', padding: '13px 40px', fontSize: '15px', fontWeight: 500, whiteSpace: 'nowrap', minWidth: '160px', textAlign: 'center' }}>
+            style={clientStyle('client-d')}
+            onMouseEnter={() => setHovered('client-d')}
+            onMouseLeave={() => setHovered(null)}>
             Espace Client
           </Link>
           <Link to="/register"
-            className="rounded-full font-medium cursor-pointer transition-colors duration-200 bg-[#38BDF8] hover:bg-[#0EA5E9]"
-            style={{ color: 'white', border: 'none', borderRadius: '9999px', padding: '12px 28px', fontSize: '15px', fontWeight: 500 }}>
+            style={registerStyle('register-d')}
+            onMouseEnter={() => setHovered('register-d')}
+            onMouseLeave={() => setHovered(null)}>
             S'inscrire
           </Link>
         </div>
@@ -86,18 +141,21 @@ export default function LandingHeader() {
           ))}
           <div className="pt-2 flex flex-col gap-2">
             <Link to="/login" onClick={() => setOpen(false)}
-              className="block text-center rounded-full font-medium cursor-pointer transition-colors duration-200 bg-[#00C896] hover:bg-[#00B080]"
-              style={{ color: 'white', border: 'none', borderRadius: '9999px', padding: '13px 40px', fontSize: '15px', fontWeight: 500, whiteSpace: 'nowrap' }}>
+              style={{ ...coachStyle('coach-m'), display: 'block', width: '100%' }}
+              onMouseEnter={() => setHovered('coach-m')}
+              onMouseLeave={() => setHovered(null)}>
               Espace Coach
             </Link>
             <Link to="/client/login" onClick={() => setOpen(false)}
-              className="block text-center rounded-full font-medium cursor-pointer transition-colors duration-200 bg-[#6C5CE7] hover:bg-[#4834D4]"
-              style={{ color: 'white', border: 'none', borderRadius: '9999px', padding: '13px 40px', fontSize: '15px', fontWeight: 500, whiteSpace: 'nowrap' }}>
+              style={{ ...clientStyle('client-m'), display: 'block', width: '100%' }}
+              onMouseEnter={() => setHovered('client-m')}
+              onMouseLeave={() => setHovered(null)}>
               Espace Client
             </Link>
             <Link to="/register" onClick={() => setOpen(false)}
-              className="block text-center rounded-full font-medium cursor-pointer transition-colors duration-200 bg-[#38BDF8] hover:bg-[#0EA5E9]"
-              style={{ color: 'white', border: 'none', borderRadius: '9999px', padding: '12px 28px', fontSize: '15px', fontWeight: 500 }}>
+              style={{ ...registerStyle('register-m'), display: 'block', width: '100%' }}
+              onMouseEnter={() => setHovered('register-m')}
+              onMouseLeave={() => setHovered(null)}>
               S'inscrire gratuitement
             </Link>
           </div>

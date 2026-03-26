@@ -230,6 +230,8 @@ function HeroIllustration() {
 function Hero() {
   const [ref, visible] = useScrollReveal<HTMLDivElement>();
   const [showDemo, setShowDemo] = useState(false);
+  const [hoverStart, setHoverStart] = useState(false);
+  const [hoverDemo, setHoverDemo] = useState(false);
 
   return (
     <>
@@ -270,13 +272,57 @@ function Hero() {
             {/* Boutons */}
             <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start mb-12">
               <Link to="/register"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-white font-semibold text-base transition-all duration-200 bg-[#38BDF8] hover:bg-[#0EA5E9] hover:scale-105 hover:shadow-xl hover:shadow-[#38BDF8]/30">
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  padding: '15px 30px',
+                  borderRadius: '50px',
+                  background: 'linear-gradient(135deg, #0A7A65, #0B9B74 60%, #00C896)',
+                  boxShadow: hoverStart
+                    ? '0 8px 28px rgba(10,122,101,0.54), 0 3px 8px rgba(0,0,0,0.14)'
+                    : '0 5px 20px rgba(10,122,101,0.42), 0 2px 6px rgba(0,0,0,0.12)',
+                  color: '#fff',
+                  fontWeight: 600,
+                  fontSize: '16px',
+                  transition: 'all 0.18s ease',
+                  transform: hoverStart ? 'translateY(-2px)' : 'none',
+                  filter: hoverStart ? 'brightness(1.07)' : 'none',
+                  textDecoration: 'none',
+                  border: 'none',
+                }}
+                onMouseEnter={() => setHoverStart(true)}
+                onMouseLeave={() => setHoverStart(false)}
+              >
                 Commencer gratuitement
                 <ArrowRight size={18} />
               </Link>
               <button
                 onClick={() => setShowDemo(true)}
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-base text-[#1A2B4A] bg-white border-2 border-[#1A2B4A]/10 hover:border-[#00C896] hover:text-[#00C896] transition-all duration-200">
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  padding: '15px 30px',
+                  borderRadius: '50px',
+                  background: hoverDemo ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.90)',
+                  color: '#0A7A65',
+                  border: '1.5px solid rgba(0,200,150,0.40)',
+                  boxShadow: hoverDemo
+                    ? '0 6px 20px rgba(0,200,150,0.18), 0 2px 6px rgba(0,0,0,0.08)'
+                    : '0 4px 14px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05)',
+                  fontWeight: 600,
+                  fontSize: '16px',
+                  transition: 'all 0.18s ease',
+                  transform: hoverDemo ? 'translateY(-2px)' : 'none',
+                  filter: hoverDemo ? 'brightness(1.07)' : 'none',
+                  cursor: 'pointer',
+                }}
+                onMouseEnter={() => setHoverDemo(true)}
+                onMouseLeave={() => setHoverDemo(false)}
+              >
                 Voir la démo
                 <ChevronRight size={18} />
               </button>
@@ -509,6 +555,7 @@ function PricingCard({ name, price, period, description, groups, cta, ctaHref, h
   groups: PlanGroup[]; cta: string; ctaHref: string; highlighted: boolean; delay: number;
 }) {
   const [ref, visible] = useScrollReveal<HTMLDivElement>();
+  const [hoverCta, setHoverCta] = useState(false);
   return (
     <div
       ref={ref}
@@ -577,12 +624,42 @@ function PricingCard({ name, price, period, description, groups, cta, ctaHref, h
       </div>
 
       <Link to={ctaHref}
-        className={`block w-full text-center py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 hover:scale-105 ${
-          highlighted
-            ? 'text-[#1A2B4A] hover:shadow-lg hover:shadow-[#00C896]/30'
-            : 'bg-white border-2 border-[#1A2B4A] text-[#1A2B4A] font-bold hover:bg-[#1A2B4A] hover:text-white'
-        }`}
-        style={highlighted ? { background: 'linear-gradient(135deg, #00C896, #00E5FF)' } : {}}
+        style={highlighted ? {
+          display: 'block',
+          width: '100%',
+          textAlign: 'center',
+          padding: '14px 0',
+          borderRadius: '50px',
+          background: 'linear-gradient(135deg, #00C896, #00E5FF)',
+          color: '#1A2B4A',
+          fontWeight: 600,
+          fontSize: '14px',
+          transition: 'all 0.18s ease',
+          boxShadow: hoverCta
+            ? '0 6px 22px rgba(0,200,150,0.50), 0 2px 6px rgba(0,0,0,0.12)'
+            : '0 4px 16px rgba(0,200,150,0.38), 0 1px 4px rgba(0,0,0,0.10)',
+          transform: hoverCta ? 'translateY(-2px)' : 'none',
+          filter: hoverCta ? 'brightness(1.07)' : 'none',
+          textDecoration: 'none',
+        } : {
+          display: 'block',
+          width: '100%',
+          textAlign: 'center',
+          padding: '14px 0',
+          borderRadius: '50px',
+          background: hoverCta ? '#1A2B4A' : 'white',
+          color: hoverCta ? 'white' : '#1A2B4A',
+          border: '2px solid #1A2B4A',
+          fontWeight: 700,
+          fontSize: '14px',
+          transition: 'all 0.18s ease',
+          boxShadow: hoverCta ? '0 4px 14px rgba(26,43,74,0.25), 0 1px 4px rgba(0,0,0,0.10)' : 'none',
+          transform: hoverCta ? 'translateY(-2px)' : 'none',
+          filter: hoverCta ? 'brightness(1.07)' : 'none',
+          textDecoration: 'none',
+        }}
+        onMouseEnter={() => setHoverCta(true)}
+        onMouseLeave={() => setHoverCta(false)}
       >
         {cta}
       </Link>

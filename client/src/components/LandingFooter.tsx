@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Logo from './Logo';
 
@@ -9,6 +10,7 @@ function scrollToId(id: string) {
 }
 
 export default function LandingFooter() {
+  const [hovered, setHovered] = useState<string | null>(null);
   return (
     <footer style={{ background: '#0D1B2A' }} className="text-gray-400 py-16">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -23,13 +25,55 @@ export default function LandingFooter() {
             </p>
             <div className="flex flex-wrap gap-2 mt-5" style={{ maxWidth: '280px' }}>
               <Link to="/login"
-                className="cursor-pointer transition-opacity duration-200 hover:opacity-[0.82]"
-                style={{ background: 'linear-gradient(135deg, #1A2B4A, #2a4070)', color: 'white', border: 'none', borderRadius: '9999px', padding: '10px 24px', fontSize: '14px', fontWeight: 500, whiteSpace: 'nowrap', minWidth: '130px', textAlign: 'center' }}>
+                style={{
+                  background: 'linear-gradient(135deg, #1A2B4A, #2a4070)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '50px',
+                  padding: '10px 24px',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  whiteSpace: 'nowrap',
+                  minWidth: '130px',
+                  textAlign: 'center',
+                  textDecoration: 'none',
+                  display: 'inline-block',
+                  transition: 'all 0.18s ease',
+                  cursor: 'pointer',
+                  boxShadow: hovered === 'footer-coach'
+                    ? '0 6px 22px rgba(26,43,74,0.50), 0 2px 6px rgba(0,0,0,0.12)'
+                    : '0 4px 16px rgba(26,43,74,0.35), 0 1px 4px rgba(0,0,0,0.10)',
+                  transform: hovered === 'footer-coach' ? 'translateY(-2px)' : 'none',
+                  filter: hovered === 'footer-coach' ? 'brightness(1.07)' : 'none',
+                }}
+                onMouseEnter={() => setHovered('footer-coach')}
+                onMouseLeave={() => setHovered(null)}>
                 Espace Coach
               </Link>
               <Link to="/client/login"
-                className="cursor-pointer transition-opacity duration-200 hover:opacity-[0.82]"
-                style={{ background: 'linear-gradient(135deg, #00C896, #00a87e)', color: 'white', border: 'none', borderRadius: '9999px', padding: '10px 24px', fontSize: '14px', fontWeight: 500, whiteSpace: 'nowrap', minWidth: '130px', textAlign: 'center' }}>
+                style={{
+                  background: 'linear-gradient(135deg, #00C896, #00a87e)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '50px',
+                  padding: '10px 24px',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  whiteSpace: 'nowrap',
+                  minWidth: '130px',
+                  textAlign: 'center',
+                  textDecoration: 'none',
+                  display: 'inline-block',
+                  transition: 'all 0.18s ease',
+                  cursor: 'pointer',
+                  boxShadow: hovered === 'footer-client'
+                    ? '0 6px 22px rgba(0,200,150,0.50), 0 2px 6px rgba(0,0,0,0.12)'
+                    : '0 4px 16px rgba(0,200,150,0.38), 0 1px 4px rgba(0,0,0,0.10)',
+                  transform: hovered === 'footer-client' ? 'translateY(-2px)' : 'none',
+                  filter: hovered === 'footer-client' ? 'brightness(1.07)' : 'none',
+                }}
+                onMouseEnter={() => setHovered('footer-client')}
+                onMouseLeave={() => setHovered(null)}>
                 Espace Client
               </Link>
             </div>
