@@ -8,6 +8,8 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      // Scope restreint à /client/ — évite le conflit avec sw-coach.js (scope /app/)
+      scope: '/client/',
       includeAssets: ['icon-192x192.png', 'icon-512x512.png', 'apple-touch-icon.png'],
       manifest: false, // On utilise notre propre manifest.json dans public/
       workbox: {
@@ -16,7 +18,9 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         navigateFallback: '/index.html',
-        navigateFallbackDenylist: [/^\/api/],
+        // sw.js (client) ne gère que /client/* — /app/* est géré par sw-coach.js
+        navigateFallbackAllowlist: [/^\/client\//],
+        navigateFallbackDenylist: [/^\/api/, /^\/app/],
         runtimeCaching: [
           // Routes Coach — NetworkFirst pour avoir le contenu frais
           {

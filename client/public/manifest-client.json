@@ -1,6 +1,6 @@
 {
   "name": "MyCareCoach (Client)",
-  "short_name": "MyCareCoach",
+  "short_name": "Client",
   "description": "Suivez vos programmes et séances de coaching",
   "start_url": "/client/dashboard",
   "scope": "/client/",

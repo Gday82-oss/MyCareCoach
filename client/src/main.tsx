@@ -2,11 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 // Enregistrement du Service Worker coach (PWA /app/*)
-if ('serviceWorker' in navigator && window.location.pathname.startsWith('/app')) {
+// Scope restreint à /app/ pour ne pas entrer en conflit avec le SW client (/client/)
+if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
-      const reg = await navigator.serviceWorker.register('/sw-coach.js')
-      console.log('[PWA Coach] Service Worker enregistré:', reg.scope)
+      const reg = await navigator.serviceWorker.register('/sw-coach.js', { scope: '/app/' })
+      console.log('[PWA Coach] SW enregistré, scope:', reg.scope)
     } catch (err) {
       console.error('[PWA Coach] Erreur SW:', err)
     }
