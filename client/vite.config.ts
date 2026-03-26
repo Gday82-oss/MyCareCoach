@@ -79,6 +79,11 @@ export default defineConfig({
     outDir: 'dist',
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
+      input: {
+        index: 'index.html',
+        coach: 'coach.html',
+        client: 'client.html',
+      },
       output: {
         manualChunks: {
           'recharts-vendor': ['recharts'],

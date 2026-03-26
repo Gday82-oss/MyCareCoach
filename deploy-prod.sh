@@ -81,7 +81,15 @@ deploy_frontend() {
     "
     
     rm frontend.tar.gz
-    success "Frontend deployed"
+
+    # Update nginx config and reload
+    log "Updating nginx config..."
+    scp nginx.conf root@$VPS_HOST:/etc/nginx/sites-available/mycarecoach
+    ssh root@$VPS_HOST "
+        ln -sf /etc/nginx/sites-available/mycarecoach /etc/nginx/sites-enabled/mycarecoach
+        nginx -t && systemctl reload nginx
+    "
+    success "Frontend deployed + nginx reloaded"
 }
 
 # Build backend
