@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Share } from 'lucide-react';
 
@@ -15,6 +16,7 @@ function detectBrowser(): BrowserType {
 }
 
 export default function InstallBannerClient() {
+  const location = useLocation();
   const [installPrompt, setInstallPrompt] = useState<any>(null);
   const [showBanner, setShowBanner]       = useState(false);
   const [browser, setBrowser]             = useState<BrowserType>('other');
@@ -97,6 +99,9 @@ export default function InstallBannerClient() {
       </div>
     );
   };
+
+  // N'afficher que sur l'interface client (/client/*)
+  if (!location.pathname.startsWith('/client')) return null;
 
   return (
     <AnimatePresence>

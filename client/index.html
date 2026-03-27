@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
     
     <!-- PWA Meta Tags — valeurs par défaut (client /client) -->
-    <meta name="theme-color" content="#6C5CE7" id="pwa-theme-color" />
+    <meta name="theme-color" content="#00C896" id="pwa-theme-color" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" id="pwa-status-bar" />
     <meta name="apple-mobile-web-app-title" content="MyCareCoach Client" id="pwa-app-title" />
@@ -40,8 +40,14 @@
           document.getElementById('apple-touch-icon-180').href     = '/icons/icon-180.png';
           document.getElementById('apple-touch-icon-152').href     = '/icons/coach-192.png';
           document.getElementById('apple-touch-icon-167').href     = '/icons/coach-192.png';
+        } else if (path.startsWith('/client')) {
+          // ── Espace Client ──
+          document.getElementById('pwa-manifest').href       = '/manifest-client.json';
+          document.getElementById('pwa-theme-color').content = '#6C5CE7';
+          document.getElementById('pwa-app-title').content   = 'MyCareCoach Client';
+          document.getElementById('pwa-app-name').content    = 'MyCareCoach Client';
         }
-        // /client/* → valeurs par défaut déjà définies (violet, icônes client)
+        // / et /login → manifest-client.json + #00C896 (valeurs par défaut)
       })();
     </script>
 

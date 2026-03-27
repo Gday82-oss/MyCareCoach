@@ -8,6 +8,8 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      // Scope restreint à /client/ — évite le conflit avec sw-coach.js (scope /app/)
+      scope: '/client/',
       includeAssets: ['icon-192x192.png', 'icon-512x512.png', 'apple-touch-icon.png'],
       manifest: false, // On utilise notre propre manifest.json dans public/
       workbox: {
@@ -16,8 +18,31 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         navigateFallback: '/index.html',
-        navigateFallbackDenylist: [/^\/api/],
+        // sw.js (client) ne gère que /client/* — /app/* est géré par sw-coach.js
+        navigateFallbackAllowlist: [/^\/client\//],
+        navigateFallbackDenylist: [/^\/api/, /^\/app/],
         runtimeCaching: [
+          // Routes Coach — NetworkFirst pour avoir le contenu frais
+          {
+            urlPattern: /^\/app\/.*/,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'coach-routes',
+              expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          // Routes Client — NetworkFirst pour avoir le contenu frais
+          {
+            urlPattern: /^\/client\/.*/,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'client-routes',
+              expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          // Google Fonts
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: 'CacheFirst',
@@ -27,6 +52,7 @@ export default defineConfig({
               cacheableResponse: { statuses: [0, 200] },
             },
           },
+          // Supabase — NetworkFirst
           {
             urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
             handler: 'NetworkFirst',

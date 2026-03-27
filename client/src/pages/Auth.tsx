@@ -129,6 +129,9 @@ export default function Auth({ initialMode = 'login' }: AuthProps) {
       >
         <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
           <div className="text-center mb-8">
+            <div className="inline-block bg-[#E8FDF6] text-[#00856A] border border-[#00C896] rounded-full px-4 py-1 text-xs font-medium mb-4">
+              Espace Coach
+            </div>
             <div
               className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
               style={{ background: 'linear-gradient(135deg, #00C896, #00CEC9)' }}

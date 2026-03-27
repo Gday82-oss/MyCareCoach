@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { X, Share } from 'lucide-react'
 
 export default function InstallPWABanner() {
+  const location = useLocation()
   const [show, setShow] = useState(false)
   const [showGuide, setShowGuide] = useState(false)
 
@@ -35,6 +37,8 @@ export default function InstallPWABanner() {
     setShowGuide(true)
   }
 
+  // N'afficher que sur l'interface coach (/app/*)
+  if (!location.pathname.startsWith('/app')) return null
   if (!show) return null
 
   return (
