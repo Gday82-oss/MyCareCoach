@@ -1,6 +1,6 @@
 {
-  "name": "MyCareCoach (Coach)",
-  "short_name": "Coach",
+  "name": "MyCare",
+  "short_name": "MyCare",
   "description": "Gérez vos clients et programmes coaching",
   "start_url": "/app/dashboard",
   "scope": "/app/",

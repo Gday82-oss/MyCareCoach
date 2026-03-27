@@ -1,10 +1,9 @@
-const CACHE_NAME = 'mycarecoach-coach-v2'
+const CACHE_NAME = 'mycarecoach-coach-v4'
 const STATIC_ASSETS = [
   '/app',
   '/favicon.svg',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png',
-  '/icons/icon-180.png',
+  '/icons/coach-192.png',
+  '/icons/coach-512.png',
   '/offline-coach.html'
 ]
 
